@@ -15,6 +15,8 @@ function handleCredentialResponse(response) {
 
   document.getElementById("logout-btn").style.display = "inline-block";
   document.querySelector(".g_id_signin").style.display = "none";
+
+  alert("¡Cuenta añadida correctamente!");
 }
 
 document.getElementById("logout-btn").addEventListener("click", () => {
@@ -24,6 +26,6 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 
   document.querySelector(".g_id_signin").style.display = "";
 
-
+ alert("Sesión cerrada.");
   
 });
