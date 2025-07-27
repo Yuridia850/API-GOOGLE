@@ -1,3 +1,4 @@
+document.getElementById("user-info").style.display = "none";
 function handleCredentialResponse(response) {
   const token = response.credential;
   console.log("Token recibido:", token);
@@ -12,19 +13,25 @@ function handleCredentialResponse(response) {
     <p>Email: ${payload.email}</p>
   </div>
   `;
+  document.getElementById("user-info").style.display = "";
 
   document.getElementById("logout-btn").style.display = "inline-block";
   document.querySelector(".g_id_signin").style.display = "none";
+
+  document.querySelector(".login-card").style.display = "none";
 
   alert("¡Cuenta añadida correctamente!");
 }
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   document.getElementById("user-info").innerHTML = "";
+  document.getElementById("user-info").style.display = "none";
   document.getElementById("logout-btn").style.display = "none";
 
 
   document.querySelector(".g_id_signin").style.display = "";
+
+  document.querySelector(".login-card").style.display = "";
 
  alert("Sesión cerrada.");
   
