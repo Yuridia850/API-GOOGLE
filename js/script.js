@@ -6,9 +6,24 @@ function handleCredentialResponse(response) {
   console.log("Datos del usuario:", payload);
 
   document.getElementById("user-info").innerHTML = `
+  <div class="login">
     <h3>Hola, ${payload.name}</h3>
-    <img src="${payload.picture}" alt="Foto de perfil" style="width:100px; border-radius:50%;"/>
+    <img src="${payload.picture}" alt="Foto de perfil"/>
     <p>Email: ${payload.email}</p>
+  </div>
   `;
 
+  document.getElementById("logout-btn").style.display = "inline-block";
+  document.querySelector(".g_id_signin").style.display = "none";
 }
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  document.getElementById("user-info").innerHTML = "";
+  document.getElementById("logout-btn").style.display = "none";
+
+
+  document.querySelector(".g_id_signin").style.display = "";
+
+
+  
+});
