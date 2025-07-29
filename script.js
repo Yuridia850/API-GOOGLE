@@ -11,6 +11,7 @@ function handleCredentialResponse(response) {
     <h3>Hola, ${payload.name}</h3>
     <img src="${payload.picture}" alt="Foto de perfil"/>
     <p>Email: ${payload.email}</p>
+    <a href="calendar.html" style="text-decoration: none;"> Entrar a calendario</a>
   </div>
   `;
   document.getElementById("user-info").style.display = "";
