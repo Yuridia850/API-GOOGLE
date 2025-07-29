@@ -101,3 +101,54 @@ body{
 .hidden {
     display: none;
 }
+.titulo-eventos{
+    margin-top: 45px;
+    text-align: center;
+}
+
+.container-eventos{
+    display: grid;
+    justify-content: space-around;
+}
+
+.info-eventos{
+    border-color: #000;
+    border-style: solid;
+    padding: 25px;
+    width:  750px;
+    margin: 20px;
+    border-radius: 25px;
+    box-shadow: 0 8px 20px 0 rgba(4, 4, 4, 0.577);
+}
+
+.fecha{
+    font-size: 26px;
+}
+
+.hora{
+    font-size: 22px;
+}
+
+.ubicacion{
+    font-size: 20px;
+}
+
+.evento-row{
+    display: flex;
+    gap: 50px;
+    margin-top: 15px;
+}
+
+.ubicacion{
+    margin-top: 15px;
+}
+
+.descripcion{
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+.texto{
+    overflow: hidden;
+    font-size: 16px;
+}
