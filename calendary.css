@@ -1,28 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Edu+SA+Hand:wght@400..700&family=Edu+VIC+WA+NT+Hand:wght@400..700&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Kumbh+Sans:wght@100..900&family=Mukta:wght@200;300;400;500;600;700;800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Intel One Mono", monospace;
 }
 
-body{
-    background: #ffff ;
+body {
+    background: #ffff;
 }
 
-.header-calendario{
+.header_logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.header-calendario {
     display: flex;
     justify-content: space-between;
     background-color: #3bb3a8;
 }
 
-.header-calendario .titulo-calendario{
+.header-calendario .titulo-calendario {
     padding-top: 23px;
     color: #ffff;
 }
 
-.header-calendario .logo{
+.header-calendario .logo {
     width: 70px;
     height: 70px;
     background: #fff;
@@ -34,7 +41,7 @@ body{
     margin: 17px 20px;
 }
 
-.header-calendario .log-out{
+.header-calendario .log-out {
     height: 50px;
     width: 50px;
     margin: 20px 20px;
@@ -90,65 +97,66 @@ body{
     transition: transform 0.2s ease;
 }
 
-#confirm-no:hover{
+#confirm-no:hover {
     transform: scale(1.15);
-} 
+}
 
-#confirm-yes:hover{
+#confirm-yes:hover {
     transform: scale(1.15);
-} 
+}
 
 .hidden {
     display: none;
 }
-.titulo-eventos{
+
+.titulo-eventos {
     margin-top: 45px;
     text-align: center;
 }
 
-.container-eventos{
+.container-eventos {
     display: grid;
     justify-content: space-around;
 }
 
-.info-eventos{
+.info-eventos {
     border-color: #000;
     border-style: solid;
     padding: 25px;
-    width:  750px;
+    width: 750px;
     margin: 20px;
     border-radius: 25px;
     box-shadow: 0 8px 20px 0 rgba(4, 4, 4, 0.577);
 }
 
-.fecha{
+.fecha {
     font-size: 26px;
 }
 
-.hora{
+.hora {
     font-size: 22px;
 }
 
-.ubicacion{
+.ubicacion {
     font-size: 20px;
 }
 
-.evento-row{
+.evento-row {
     display: flex;
     gap: 50px;
     margin-top: 15px;
 }
 
-.ubicacion{
+.ubicacion {
     margin-top: 15px;
 }
 
-.descripcion{
+.descripcion {
     font-size: 20px;
     margin-top: 15px;
 }
 
-.texto{
+.texto {
     overflow: hidden;
     font-size: 16px;
 }
