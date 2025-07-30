@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+SA+Hand:wght@400..700&family=Edu+VIC+WA+NT+Hand:wght@400..700&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Kumbh+Sans:wght@100..900&family=Mukta:wght@200;300;400;500;600;700;800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Intel One Mono", monospace;
+}
+
+body{
+    background: #ffff ;
+}
+
+.header-calendario{
+    display: flex;
+    justify-content: space-between;
+    background-color: #3bb3a8;
+}
+
+.header-calendario .titulo-calendario{
+    padding-top: 23px;
+    color: #ffff;
+}
+
+.header-calendario .logo{
+    width: 70px;
+    height: 70px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: contain;
+    margin: 17px 20px;
+}
+
+.header-calendario .log-out{
+    height: 50px;
+    width: 50px;
+    margin: 20px 20px;
+    transition: transform 0.2s ease;
+}
+
+.header-calendario .log-out:hover {
+    transform: scale(1.15);
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}
+
+.popup-buttons {
+    margin-top: 15px;
+}
+
+.popup-buttons button {
+    margin: 0 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#confirm-yes {
+    background-color: #dd2c26;
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+#confirm-no {
+    background-color: #3bb3a8;
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+#confirm-no:hover{
+    transform: scale(1.15);
+} 
+
+#confirm-yes:hover{
+    transform: scale(1.15);
+} 
+
+.hidden {
+    display: none;
+}
+.titulo-eventos{
+    margin-top: 45px;
+    text-align: center;
+}
+
+.container-eventos{
+    display: grid;
+    justify-content: space-around;
+}
+
+.info-eventos{
+    border-color: #000;
+    border-style: solid;
+    padding: 25px;
+    width:  750px;
+    margin: 20px;
+    border-radius: 25px;
+    box-shadow: 0 8px 20px 0 rgba(4, 4, 4, 0.577);
+}
+
+.fecha{
+    font-size: 26px;
+}
+
+.hora{
+    font-size: 22px;
+}
+
+.ubicacion{
+    font-size: 20px;
+}
+
+.evento-row{
+    display: flex;
+    gap: 50px;
+    margin-top: 15px;
+}
+
+.ubicacion{
+    margin-top: 15px;
+}
+
+.descripcion{
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+.texto{
+    overflow: hidden;
+    font-size: 16px;
+}

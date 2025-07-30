@@ -119,3 +119,22 @@ border-radius:50%
     box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     transform: translateY(-2px);
 }
+
+.login a{
+  color: #3bb3a8;
+  font-weight: bold;
+  background-color: #ffffff;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  width: 160px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.login a:hover{
+    background-color: white; 
+    color: #3bb3a8;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
