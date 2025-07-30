@@ -1,46 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendary</title>
-    <link rel="stylesheet" href="calendary.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendary</title>
+  <link rel="stylesheet" href="calendary.css">
 </head>
+
 <body>
-    <header class="header-calendario">   
-        <img src="Img/calendar_logo.png" class="logo" alt="">
-        <h1 class="titulo-calendario">Mi Calendario Personal</h1>
-        <img src="/Img/logout-03.svg" class="log-out" id="cerrarSesion">
+  <header class="header-calendario">
+    <h2 class="header_logo"><img src="Img/calendar_logo.png" class="logo" id="logo" alt=""> <span id="text_logo">Abraham
+        Pech</span>
+    </h2>
+    <h1 class="titulo-calendario">Mi Calendario Personal</h1>
+    <img src="/Img/logout-03.svg" class="log-out" id="cerrarSesion">
 
     <div id="popup-confirm" class="popup hidden">
-  <div class="popup-content">
-    <p>¿Estás seguro de que deseas cerrar sesión?</p>
-    <div class="popup-buttons">
-      <button id="confirm-yes">Sí</button>
-      <button id="confirm-no">No</button>
+      <div class="popup-content">
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+        <div class="popup-buttons">
+          <button id="confirm-yes">Sí</button>
+          <button id="confirm-no">No</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-    </header>
+  </header>
 
-    <main>
-      <section class="hero">
-        <h1 class="titulo-eventos">MIS FUTUROS EVENTOS</h1>
-      </section>
-      <section class="container-eventos">
-        <div class="info-eventos">
+  <main>
+    <section class="hero">
+      <h1 class="titulo-eventos">MIS FUTUROS EVENTOS</h1>
+    </section>
+    <section class="container-eventos">
+      <div class="info-eventos">
         <h1 class="fecha">Hoy - Martes 29 de Julio</h1>
         <div class="evento-row">
           <h1 class="hora">10:00AM - 11:00AM</h1>
           <h1 class="eventos">"Nombre del Evento"</h1>
         </div>
-          <h2 class="ubicacion">Ubicación:</h2>
-          <h2 class="descripcion">Descripción:</h2>
-          <p class="texto">Recordatorio para asistir a cita médica</p>
-        </div>
-      </section>
-    </main>
+        <h2 class="ubicacion">Ubicación:</h2>
+        <h2 class="descripcion">Descripción:</h2>
+        <p class="texto">Recordatorio para asistir a cita médica</p>
+      </div>
+    </section>
+  </main>
 
-    <script src="calendar.js"></script>
+  <script src="calendar.js"></script>
 </body>
+
 </html>

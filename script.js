@@ -1,39 +1,15 @@
-document.getElementById("user-info").style.display = "none";
-function handleCredentialResponse(response) {
+const token = sessionStorage.getItem("token");
+if (token) {
+  location.href = "calendar.html"
+}
+
+function handleCredentialResponse (response) {
   const token = response.credential;
-  console.log("Token recibido:", token);
-
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  console.log("Datos del usuario:", payload);
-
-  document.getElementById("user-info").innerHTML = `
-  <div class="login">
-    <h3>Hola, ${payload.name}</h3>
-    <img src="${payload.picture}" alt="Foto de perfil"/>
-    <p>Email: ${payload.email}</p>
-    <a href="calendar.html" style="text-decoration: none;"> Entrar a calendario</a>
-  </div>
-  `;
-  document.getElementById("user-info").style.display = "";
-
-  document.getElementById("logout-btn").style.display = "inline-block";
-  document.querySelector(".g_id_signin").style.display = "none";
-
-  document.querySelector(".login-card").style.display = "none";
-
-  alert("¡Cuenta añadida correctamente!");
+  sessionStorage.setItem("token", token)
+  location.href = "calendar.html"
 }
 
 document.getElementById("logout-btn").addEventListener("click", () => {
-  document.getElementById("user-info").innerHTML = "";
-  document.getElementById("user-info").style.display = "none";
-  document.getElementById("logout-btn").style.display = "none";
-
-
-  document.querySelector(".g_id_signin").style.display = "";
-
-  document.querySelector(".login-card").style.display = "";
-
- alert("Sesión cerrada.");
-  
+  sessionStorage.removeItem("token");
+  location.href = "index.html";
 });
