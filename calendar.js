@@ -52,8 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// formulario
-
 document.getElementById("btn-crear").addEventListener("click", () => {
     document.getElementById("modal-formulario").classList.remove("hidden");
 })
