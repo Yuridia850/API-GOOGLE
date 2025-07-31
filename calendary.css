@@ -226,3 +226,12 @@ body {
     font-size: 20px;
     cursor: pointer;
 }
+.control-row{
+    display: flex;
+    gap: 50px;
+    margin-top: 25px;   
+}
+.eliminacion{
+    width: 80px;
+    height: 30px;
+}

@@ -113,6 +113,11 @@ function mostrarEvento(evento) {
 
     </h1><p class="texto">${evento.descripcionEvento}</p>
 
+        <div class="control-row">
+
+        <button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>
+    </div>
+
     `;
 
     document.getElementById("container-eventos").appendChild(nuevoEvento);
