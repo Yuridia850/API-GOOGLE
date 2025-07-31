@@ -51,3 +51,83 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('popup-confirm').classList.add('hidden');
   });
 });
+
+document.getElementById("btn-crear").addEventListener("click", () => {
+    document.getElementById("modal-formulario").classList.remove("hidden");
+})
+
+document.getElementById("cerrar-modal").addEventListener("click", () => {
+    document.getElementById("modal-formulario").classList.add("hidden");
+})
+
+document.getElementById("formulario-evento").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const nombreEvento = document.getElementById("nombre-evento").value;
+    const fechaEvento = document.getElementById("fecha-evento").value;
+    const inicioEvento = document.getElementById("inicio-evento").value;
+    const finEvento = document.getElementById("fin-evento").value;
+    const lugarEvento = document.getElementById("lugar-evento").value;
+    const descripcionEvento = document.getElementById("descripcion-evento").value;
+
+    crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento);
+
+    document.getElementById("modal-formulario").classList.add("hidden");
+
+    this.reset();
+});
+
+function FechaLocal(fechaISO) {
+    const fechaGeneral = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(fechaISO).toLocaleDateString('es-MX', fechaGeneral); 
+}
+
+function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
+    const nuevoEvento = {
+        nombreEvento,
+        fechaEvento,
+        inicioEvento,
+        finEvento,
+        lugarEvento,
+        descripcionEvento
+    };
+
+    mostrarEvento(nuevoEvento);
+    guardarEventoStorage(nuevoEvento); 
+}
+
+function mostrarEvento(evento) {
+    const nuevoEvento = document.createElement("div");
+    nuevoEvento.classList.add("info-eventos");
+
+    nuevoEvento.innerHTML = `            
+    
+    <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
+
+    <div class="evento-row">
+        <h1 class="hora">${evento.inicioEvento} - ${evento.finEvento}</h1>
+        <h1 class="eventos">${evento.nombreEvento}</h1>
+    </div>
+                
+    <h1 class="ubicacion">${evento.lugarEvento}</h1>
+
+    </h1><p class="texto">${evento.descripcionEvento}</p>
+
+    `;
+
+    document.getElementById("container-eventos").appendChild(nuevoEvento);
+}
+
+function guardarEventoStorage(evento) {
+    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    eventos.push(evento);
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+}
+
+function cargarEventosStorage() {
+    const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    eventos.forEach(evento => mostrarEvento(evento));
+
+}
+
+window.addEventListener("DOMContentLoaded", cargarEventosStorage);

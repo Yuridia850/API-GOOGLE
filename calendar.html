@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendary</title>
   <link rel="stylesheet" href="calendary.css">
-  <script src="calendar.js"></script>
-  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
 </head>
 
 <body>
@@ -33,19 +31,41 @@
     <section class="hero">
       <h1 class="titulo-eventos">MIS FUTUROS EVENTOS</h1>
     </section>
+
     <section class="container-eventos">
-      <div class="info-eventos">
-        <h1 class="fecha">Hoy - Martes 29 de Julio</h1>
-        <div class="evento-row">
-          <h1 class="hora">10:00AM - 11:00AM</h1>
-          <h1 class="eventos">"Nombre del Evento"</h1>
+
+      <div class="barra-controles">
+        <button class="creacion" id="btn-crear">Crear un Evento</button>
+                
+        <div id="modal-formulario" class="modal hidden">
+
+          <div class="modal-formulario">
+            <span id="cerrar-modal" class="cerrar">&times;</span>
+            <h2 class="Nuevo-Evento">Nuevo Evento</h2>
+
+            <form id="formulario-evento">
+              <input type="text" id="nombre-evento" placeholder="Nombre del Evento" required>
+              <input type="date" id="fecha-evento" required>
+              <input type="time" id="inicio-evento" required>
+              <input type="time" id="fin-evento" required>
+              <input type="text" id="lugar-evento" placeholder="Lugar del Evento" required>
+              <input type="text" id="descripcion-evento" placeholder="Descripción del Evento" required>
+              <button type="submit" id="btn-guardar">Guardar Evento</button>
+            </form>
+          </div>
+
         </div>
-        <h2 class="ubicacion">Ubicación:</h2>
-        <h2 class="descripcion">Descripción:</h2>
-        <p class="texto">Recordatorio para asistir a cita médica</p>
-      </div>
+
+      </div> 
+
+      <div id="container-eventos"></div>
+
     </section>
   </main>
+
+  <script src="calendar.js"></script>
+  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+
 </body>
 
 </html>

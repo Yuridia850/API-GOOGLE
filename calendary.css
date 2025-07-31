@@ -26,6 +26,7 @@ body {
 
 .header-calendario .titulo-calendario {
     padding-top: 23px;
+    margin-right: 145px;
     color: #ffff;
 }
 
@@ -117,6 +118,7 @@ body {
 .container-eventos {
     display: grid;
     justify-content: space-around;
+    justify-items: center;
 }
 
 .info-eventos {
@@ -159,4 +161,68 @@ body {
 .texto {
     overflow: hidden;
     font-size: 16px;
+}
+
+.barra-controles {
+  width: 1200px; 
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.creacion{
+    width: 60%;
+    height: 35px;
+    border-radius: 25px;
+    margin-top: 15px;
+    box-shadow: 5px 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.1 ease;
+    cursor: pointer;
+}
+
+.creacion:hover{
+    transform: scale(1.05);
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-formulario {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+    
+}
+
+.modal-formulario form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.Nuevo-Evento {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cerrar {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
 }
