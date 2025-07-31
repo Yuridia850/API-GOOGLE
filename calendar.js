@@ -136,3 +136,38 @@ function cargarEventosStorage() {
 }
 
 window.addEventListener("DOMContentLoaded", cargarEventosStorage);
+
+let contenedorEliminar = null;
+
+function eliminarContenedor(boton){
+    contenedorEliminar = boton.closest(".info-eventos");
+    document.getElementById("modal-confirmacion-eliminar").style.display = "flex";
+}    
+
+document.getElementById("btn-confirmar").addEventListener("click", () => {
+    if (contenedorEliminar) {
+        const nombre = contenedorEliminar.querySelector(".eventos").textContent;
+        const hora = contenedorEliminar.querySelector(".hora").textContent;
+        const fecha = contenedorEliminar.querySelector(".fecha").textContent;
+
+        let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+
+        eventos = eventos.filter(e => 
+            !(e.nombreEvento === nombre && 
+              `${e.inicioEvento} - ${e.finEvento}` === hora &&
+              FechaLocal(e.fechaEvento) === fecha)
+        );
+
+        localStorage.setItem("eventos", JSON.stringify(eventos));
+
+        contenedorEliminar.remove();
+        contenedorEliminar = null;
+    }
+
+    document.getElementById("modal-confirmacion-eliminar").style.display = "none";
+});
+
+document.getElementById("btn-cancelar").addEventListener("click", () => {
+    contenedorEliminar = null;
+    document.getElementById("modal-confirmacion-eliminar").style.display = "none";
+});
