@@ -1,41 +1,46 @@
 const CLIENT_ID = '488928366738-0g2aoip3o91rq4ae9u305sqp5lka0it7.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyCJF2jf9KoIzoIXIsSZCxIfpXiBMtErW3Q';
-const CALENDAR_ID = 'apigugul7@gmail.com';
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
-function cargarEventosGoogleCalendar() {
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}`;
+async function cargarEventosGoogleCalendar() {
+  try {
 
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      if (data.items && Array.isArray(data.items)) {
-        data.items.forEach(evento => {
-          const nombreEvento = evento.summary || "Sin título";
-          const fechaEvento = evento.start?.date || evento.start?.dateTime || "";
-          const inicioEvento = evento.start?.dateTime ? new Date(evento.start.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
-          const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
-          const lugarEvento = evento.location || "";
-          const descripcionEvento = evento.description || "";
-
-          const eventoGoogle = {
-            nombreEvento,
-            fechaEvento,
-            inicioEvento,
-            finEvento,
-            lugarEvento,
-            descripcionEvento,
-            esEventoGoogle: true
-          };
-
-          mostrarEvento(eventoGoogle);
-        });
-      }
-    })
-    .catch(error => {
-      console.error("Error al obtener eventos:", error);
+    const response = await gapi.client.calendar.events.list({
+      'calendarId': 'primary',
+      'timeMin': (new Date()).toISOString(),
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 50,
+      'orderBy': 'startTime'
     });
+
+    const eventos = response.result.items;
+    if (eventos && Array.isArray(eventos)) {
+      eventos.forEach(evento => {
+        const nombreEvento = evento.summary || "Sin título";
+        const fechaEvento = evento.start?.date || evento.start?.dateTime || "";
+        const inicioEvento = evento.start?.dateTime ? new Date(evento.start.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        const lugarEvento = evento.location || "";
+        const descripcionEvento = evento.description || "";
+
+        const eventoGoogle = {
+          nombreEvento,
+          fechaEvento,
+          inicioEvento,
+          finEvento,
+          lugarEvento,
+          descripcionEvento,
+          esEventoGoogle: true
+        };
+
+        mostrarEvento(eventoGoogle);
+      });
+    }
+  } catch (error) {
+    console.error("Error al obtener eventos del calendario:", error);
+  }
 }
 
 function gapiLoaded() {
@@ -49,8 +54,11 @@ async function initializeGapiClient() {
   });
 
   const token = sessionStorage.getItem("token");
-  if (token) {
-    gapi.client.setToken({ access_token: token });
+  const accessToken = sessionStorage.getItem("access_token");
+  
+  if (token && accessToken) {
+
+    gapi.client.setToken({ access_token: accessToken });
     if (!eventosYaCargados) {
       cargarTodosLosEventos();
     }
@@ -63,7 +71,9 @@ window.gapiLoaded = gapiLoaded;
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = sessionStorage.getItem("token");
-  if (!token) {
+  const accessToken = sessionStorage.getItem("access_token");
+  
+  if (!token || !accessToken) {
     location.href = "index.html";
     return;
   }
@@ -82,6 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('confirm-yes').addEventListener('click', function () {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("user_email");
     location.href = "index.html";
   });
 
