@@ -288,3 +288,23 @@ body {
   background-color: #a3adb4;
   color: black;
 }
+
+.evento-google {
+    border-color: #000000;
+    background-color: #f8f9ff;
+}
+
+.evento-google-label {
+    color: #3bb3a8;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.evento-google .fecha {
+    color: #000000;
+}
+
+.evento-google .eventos {
+    color: #000000;
+}
