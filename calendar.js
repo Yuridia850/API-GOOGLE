@@ -8,7 +8,6 @@ async function cargarEventosGoogleCalendar() {
 
     const response = await gapi.client.calendar.events.list({
       'calendarId': 'primary',
-      'timeMin': (new Date()).toISOString(),
       'showDeleted': false,
       'singleEvents': true,
       'maxResults': 50,
@@ -19,7 +18,7 @@ async function cargarEventosGoogleCalendar() {
     if (eventos && Array.isArray(eventos)) {
       eventos.forEach(evento => {
         const nombreEvento = evento.summary || "Sin título";
-        const fechaEvento = evento.start?.date || evento.start?.dateTime || "";
+        const fechaEvento = evento.start?.dateTime ? evento.start.dateTime.split('T')[0] : evento.start?.date || "";
         const inicioEvento = evento.start?.dateTime ? new Date(evento.start.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
         const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
         const lugarEvento = evento.location || "";
@@ -41,6 +40,38 @@ async function cargarEventosGoogleCalendar() {
   } catch (error) {
     console.error("Error al obtener eventos del calendario:", error);
   }
+}
+
+async function agregarEventoAGoogleCalendar(evento) {
+  try {
+
+    const startDateTime = `${evento.fechaEvento}T${evento.inicioEvento}:00`;
+    const endDateTime = `${evento.fechaEvento}T${evento.finEvento}:00`;
+
+    const event = {
+      'summary': evento.nombreEvento,
+      'location': evento.lugarEvento,
+      'description': evento.descripcionEvento,
+      'start': {
+        'dateTime': startDateTime,
+        'timeZone': 'America/Mexico_City'
+      },
+      'end': {
+        'dateTime': endDateTime,
+        'timeZone': 'America/Mexico_City'
+      }
+    };
+
+    const response = await gapi.client.calendar.events.insert({
+      'calendarId': 'primary',
+      'resource': event
+    });
+
+    console.log("Evento agregado a Google Calendar:", response);
+  } catch (error) {
+    console.error("Error al agregar evento a Google Calendar:", error);
+  }
+  
 }
 
 function gapiLoaded() {
@@ -128,8 +159,13 @@ document.getElementById("formulario-evento").addEventListener("submit", function
 });
 
 function FechaLocal(fechaISO) {
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) {
+        fechaISO += 'T00:00:00';
+    }
+
     const fechaGeneral = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(fechaISO).toLocaleDateString('es-MX', fechaGeneral); 
+    return new Date(fechaISO + `-06:00`).toLocaleDateString('es-MX', fechaGeneral); 
 }
 
 function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
@@ -143,7 +179,9 @@ function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lug
     };
 
     mostrarEvento(nuevoEvento);
-    guardarEventoStorage(nuevoEvento); 
+
+
+    agregarEventoAGoogleCalendar(nuevoEvento);
 }
 
 function mostrarEvento(evento) {
