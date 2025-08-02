@@ -229,8 +229,23 @@ body {
 }
 .control-row{
     display: flex;
-    gap: 50px;
+    gap: 15px;
     margin-top: 25px;   
+}
+
+.editar{
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #3bb3a8, #2a9d8f);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 2px solid #000;
+}
+
+.editar:hover {
+    transform: scale(1.05);
 }
 
 .eliminacion{
@@ -241,6 +256,7 @@ body {
     color: #fff;
     cursor: pointer;
     transition: transform 0.2s ease;
+    border: 2px solid #000;
 
 }
 

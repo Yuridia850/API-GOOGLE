@@ -88,6 +88,39 @@ async function eliminarEventoDeGoogleCalendar(eventId) {
   }
 }
 
+async function editarEventoEnGoogleCalendar(eventId, evento) {
+  try {
+    const startDate = new Date(`${evento.fechaEvento}T${evento.inicioEvento}:00`);
+    const endDate = new Date(`${evento.fechaEvento}T${evento.finEvento}:00`);
+    
+    const event = {
+      'summary': evento.nombreEvento,
+      'location': evento.lugarEvento,
+      'description': evento.descripcionEvento,
+      'start': {
+        'dateTime': startDate.toISOString(),
+        'timeZone': 'America/Mexico_City'
+      },
+      'end': {
+        'dateTime': endDate.toISOString(),
+        'timeZone': 'America/Mexico_City'
+      }
+    };
+
+    const response = await gapi.client.calendar.events.update({
+      'calendarId': 'primary',
+      'eventId': eventId,
+      'resource': event
+    });
+
+    console.log("Evento editado en Google Calendar:", response);
+    return true;
+  } catch (error) {
+    console.error("Error al editar evento en Google Calendar:", error);
+    return false;
+  }
+}
+
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
@@ -173,13 +206,35 @@ document.getElementById("formulario-evento").addEventListener("submit", function
 });
 
 function FechaLocal(fechaISO) {
-
     if (/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) {
         fechaISO += 'T00:00:00';
     }
 
     const fechaGeneral = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(fechaISO + `-06:00`).toLocaleDateString('es-MX', fechaGeneral); 
+}
+
+function formatearHora(hora) {
+    if (!hora) return "";
+    
+
+    if (hora.includes('AM') || hora.includes('PM') || hora.includes('a.m.') || hora.includes('p.m.')) {
+        return hora;
+    }
+    
+
+    const [horas, minutos] = hora.split(':');
+    const horasNum = parseInt(horas);
+    
+    if (horasNum === 0) {
+        return `12:${minutos} AM`;
+    } else if (horasNum < 12) {
+        return `${horasNum}:${minutos} AM`;
+    } else if (horasNum === 12) {
+        return `12:${minutos} PM`;
+    } else {
+        return `${horasNum - 12}:${minutos} PM`;
+    }
 }
 
 async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
@@ -215,12 +270,15 @@ function mostrarEvento(evento) {
         nuevoEvento.setAttribute('data-google-event-id', evento.googleEventId);
     }
 
+    const inicioFormateado = formatearHora(evento.inicioEvento);
+    const finFormateado = formatearHora(evento.finEvento);
+
     nuevoEvento.innerHTML = `            
     
     <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
 
     <div class="evento-row">
-        <h1 class="hora">${evento.inicioEvento} - ${evento.finEvento}</h1>
+        <h1 class="hora">${inicioFormateado} - ${finFormateado}</h1>
         <h1 class="eventos">${evento.nombreEvento}</h1>
     </div>
                 
@@ -229,6 +287,7 @@ function mostrarEvento(evento) {
     </h1><p class="texto">${evento.descripcionEvento}</p>
 
         <div class="control-row">
+        <button class="editar" onclick="editarContenedor(this)">Editar</button>
         <button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>
     </div>
 
@@ -323,4 +382,128 @@ document.getElementById("btn-confirmar").addEventListener("click", async () => {
 document.getElementById("btn-cancelar").addEventListener("click", () => {
     contenedorEliminar = null;
     document.getElementById("modal-confirmacion-eliminar").style.display = "none";
+});
+
+let contenedorEditar = null;
+
+function editarContenedor(boton) {
+    contenedorEditar = boton.closest(".info-eventos");
+    
+    const nombre = contenedorEditar.querySelector(".eventos").textContent;
+    const horaCompleta = contenedorEditar.querySelector(".hora").textContent;
+    const [inicioEvento, finEvento] = horaCompleta.split(' - ');
+    const ubicacion = contenedorEditar.querySelector(".ubicacion").textContent;
+    const descripcion = contenedorEditar.querySelector(".texto").textContent;
+    
+
+    let fechaOriginal = '';
+    const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    const googleEventId = contenedorEditar.getAttribute('data-google-event-id');
+    
+    if (googleEventId) {
+        const eventoEncontrado = eventos.find(e => e.googleEventId === googleEventId);
+        if (eventoEncontrado) {
+            fechaOriginal = eventoEncontrado.fechaEvento;
+        }
+    } else {
+        const eventoEncontrado = eventos.find(e => 
+            e.nombreEvento === nombre && 
+            e.inicioEvento === inicioEvento &&
+            e.finEvento === finEvento &&
+            e.lugarEvento === ubicacion
+        );
+        if (eventoEncontrado) {
+            fechaOriginal = eventoEncontrado.fechaEvento;
+        }
+    }
+    
+
+    document.getElementById("editar-nombre-evento").value = nombre;
+    document.getElementById("editar-fecha-evento").value = fechaOriginal;
+    document.getElementById("editar-inicio-evento").value = inicioEvento;
+    document.getElementById("editar-fin-evento").value = finEvento;
+    document.getElementById("editar-lugar-evento").value = ubicacion;
+    document.getElementById("editar-descripcion-evento").value = descripcion;
+    
+    document.getElementById("modal-editar-evento").classList.remove("hidden");
+}
+
+document.getElementById("cerrar-modal-editar").addEventListener("click", () => {
+    document.getElementById("modal-editar-evento").classList.add("hidden");
+    contenedorEditar = null;
+});
+
+document.getElementById("formulario-editar-evento").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    if (!contenedorEditar) return;
+    
+    const nombreEvento = document.getElementById("editar-nombre-evento").value;
+    const fechaEvento = document.getElementById("editar-fecha-evento").value;
+    const inicioEvento = document.getElementById("editar-inicio-evento").value;
+    const finEvento = document.getElementById("editar-fin-evento").value;
+    const lugarEvento = document.getElementById("editar-lugar-evento").value;
+    const descripcionEvento = document.getElementById("editar-descripcion-evento").value;
+    
+    const googleEventId = contenedorEditar.getAttribute('data-google-event-id');
+    
+    const eventoEditado = {
+        nombreEvento,
+        fechaEvento,
+        inicioEvento,
+        finEvento,
+        lugarEvento,
+        descripcionEvento,
+        googleEventId: googleEventId,
+        esEventoGoogle: !!googleEventId
+    };
+    
+
+    if (googleEventId) {
+        const exitoGoogle = await editarEventoEnGoogleCalendar(googleEventId, eventoEditado);
+        if (!exitoGoogle) {
+            alert("Error al actualizar el evento en Google Calendar");
+            return;
+        }
+    }
+    
+
+    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    if (googleEventId) {
+        const index = eventos.findIndex(e => e.googleEventId === googleEventId);
+        if (index !== -1) {
+            eventos[index] = eventoEditado;
+        }
+    } else {
+
+        const nombreOriginal = contenedorEditar.querySelector(".eventos").textContent;
+        const horaOriginal = contenedorEditar.querySelector(".hora").textContent;
+        const ubicacionOriginal = contenedorEditar.querySelector(".ubicacion").textContent;
+        
+        const index = eventos.findIndex(e => 
+            e.nombreEvento === nombreOriginal && 
+            `${e.inicioEvento} - ${e.finEvento}` === horaOriginal &&
+            e.lugarEvento === ubicacionOriginal
+        );
+        if (index !== -1) {
+            eventos[index] = eventoEditado;
+        }
+    }
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+    
+
+    const inicioFormateado = formatearHora(inicioEvento);
+    const finFormateado = formatearHora(finEvento);
+    
+    contenedorEditar.querySelector(".fecha").textContent = FechaLocal(fechaEvento);
+    contenedorEditar.querySelector(".hora").textContent = `${inicioFormateado} - ${finFormateado}`;
+    contenedorEditar.querySelector(".eventos").textContent = nombreEvento;
+    contenedorEditar.querySelector(".ubicacion").textContent = lugarEvento;
+    contenedorEditar.querySelector(".texto").textContent = descripcionEvento;
+    
+
+    document.getElementById("modal-editar-evento").classList.add("hidden");
+    contenedorEditar = null;
+    
+    this.reset();
 });
