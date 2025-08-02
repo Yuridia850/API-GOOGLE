@@ -5,7 +5,6 @@ const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
 async function cargarEventosGoogleCalendar() {
   try {
-
     const response = await gapi.client.calendar.events.list({
       'calendarId': 'primary',
       'showDeleted': false,
@@ -31,7 +30,8 @@ async function cargarEventosGoogleCalendar() {
           finEvento,
           lugarEvento,
           descripcionEvento,
-          esEventoGoogle: true
+          esEventoGoogle: true,
+          googleEventId: evento.id
         };
 
         mostrarEvento(eventoGoogle);
@@ -44,20 +44,19 @@ async function cargarEventosGoogleCalendar() {
 
 async function agregarEventoAGoogleCalendar(evento) {
   try {
-
-    const startDateTime = `${evento.fechaEvento}T${evento.inicioEvento}:00`;
-    const endDateTime = `${evento.fechaEvento}T${evento.finEvento}:00`;
-
+    const startDate = new Date(`${evento.fechaEvento}T${evento.inicioEvento}:00`);
+    const endDate = new Date(`${evento.fechaEvento}T${evento.finEvento}:00`);
+    
     const event = {
       'summary': evento.nombreEvento,
       'location': evento.lugarEvento,
       'description': evento.descripcionEvento,
       'start': {
-        'dateTime': startDateTime,
+        'dateTime': startDate.toISOString(),
         'timeZone': 'America/Mexico_City'
       },
       'end': {
-        'dateTime': endDateTime,
+        'dateTime': endDate.toISOString(),
         'timeZone': 'America/Mexico_City'
       }
     };
@@ -68,10 +67,25 @@ async function agregarEventoAGoogleCalendar(evento) {
     });
 
     console.log("Evento agregado a Google Calendar:", response);
+    return response.result.id;
   } catch (error) {
     console.error("Error al agregar evento a Google Calendar:", error);
+    return null;
   }
-  
+}
+
+async function eliminarEventoDeGoogleCalendar(eventId) {
+  try {
+    await gapi.client.calendar.events.delete({
+      'calendarId': 'primary',
+      'eventId': eventId
+    });
+    console.log("Evento eliminado de Google Calendar:", eventId);
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar evento de Google Calendar:", error);
+    return false;
+  }
 }
 
 function gapiLoaded() {
@@ -168,7 +182,7 @@ function FechaLocal(fechaISO) {
     return new Date(fechaISO + `-06:00`).toLocaleDateString('es-MX', fechaGeneral); 
 }
 
-function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
+async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
     const nuevoEvento = {
         nombreEvento,
         fechaEvento,
@@ -178,10 +192,15 @@ function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lug
         descripcionEvento
     };
 
+    const googleEventId = await agregarEventoAGoogleCalendar(nuevoEvento);
+    
+    if (googleEventId) {
+        nuevoEvento.googleEventId = googleEventId;
+        nuevoEvento.esEventoGoogle = true;
+    }
+
     mostrarEvento(nuevoEvento);
-
-
-    agregarEventoAGoogleCalendar(nuevoEvento);
+    guardarEventoStorage(nuevoEvento);
 }
 
 function mostrarEvento(evento) {
@@ -190,6 +209,10 @@ function mostrarEvento(evento) {
     
     if (evento.esEventoGoogle) {
         nuevoEvento.classList.add("evento-google");
+    }
+
+    if (evento.googleEventId) {
+        nuevoEvento.setAttribute('data-google-event-id', evento.googleEventId);
     }
 
     nuevoEvento.innerHTML = `            
@@ -206,7 +229,7 @@ function mostrarEvento(evento) {
     </h1><p class="texto">${evento.descripcionEvento}</p>
 
         <div class="control-row">
-        ${!evento.esEventoGoogle ? '<button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>' : '<span class="evento-google-label">Evento de Google Calendar</span>'}
+        <button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>
     </div>
 
     `;
@@ -222,7 +245,12 @@ function guardarEventoStorage(evento) {
 
 function cargarEventosStorage() {
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-    eventos.forEach(evento => mostrarEvento(evento));
+    eventos.forEach(evento => {
+
+        if (!evento.googleEventId) {
+            mostrarEvento(evento);
+        }
+    });
 }
 
 let eventosYaCargados = false;
@@ -230,7 +258,6 @@ let eventosYaCargados = false;
 function cargarTodosLosEventos() {
     if (eventosYaCargados) return; 
     
-
     const container = document.getElementById("container-eventos");
     container.innerHTML = "";
     
@@ -254,21 +281,37 @@ function eliminarContenedor(boton){
     document.getElementById("modal-confirmacion-eliminar").style.display = "flex";
 }    
 
-document.getElementById("btn-confirmar").addEventListener("click", () => {
+document.getElementById("btn-confirmar").addEventListener("click", async () => {
     if (contenedorEliminar) {
         const nombre = contenedorEliminar.querySelector(".eventos").textContent;
         const hora = contenedorEliminar.querySelector(".hora").textContent;
         const fecha = contenedorEliminar.querySelector(".fecha").textContent;
+        const googleEventId = contenedorEliminar.getAttribute('data-google-event-id');
+
+
+        if (googleEventId) {
+            const eliminadoDeGoogle = await eliminarEventoDeGoogleCalendar(googleEventId);
+            if (!eliminadoDeGoogle) {
+                alert("Error al eliminar el evento de Google Calendar");
+                document.getElementById("modal-confirmacion-eliminar").style.display = "none";
+                return;
+            }
+        }
+
 
         let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+        if (googleEventId) {
+            eventos = eventos.filter(e => e.googleEventId !== googleEventId);
+        } else {
 
-        eventos = eventos.filter(e => 
-            !(e.nombreEvento === nombre && 
-              `${e.inicioEvento} - ${e.finEvento}` === hora &&
-              FechaLocal(e.fechaEvento) === fecha)
-        );
-
+            eventos = eventos.filter(e => 
+                !(e.nombreEvento === nombre && 
+                  `${e.inicioEvento} - ${e.finEvento}` === hora &&
+                  FechaLocal(e.fechaEvento) === fecha)
+            );
+        }
         localStorage.setItem("eventos", JSON.stringify(eventos));
+
 
         contenedorEliminar.remove();
         contenedorEliminar = null;
