@@ -229,14 +229,39 @@ body {
 }
 .control-row{
     display: flex;
-    gap: 50px;
+    gap: 15px;
     margin-top: 25px;   
+}
+
+.editar{
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #3bb3a8, #2a9d8f);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 2px solid #000;
+}
+
+.editar:hover {
+    transform: scale(1.05);
 }
 
 .eliminacion{
     width: 80px;
     height: 30px;
     border-radius: 5px;
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 2px solid #000;
+
+}
+
+.eliminacion:hover {
+    transform: scale(1.05);
 }
 
 .modal-eliminar-modal {
@@ -269,6 +294,7 @@ body {
   gap: 10px;
   justify-content: center;
   margin-top: 10px;
+  
 }
 
 .modal-eliminar-modal .botones-confirmacion button {
@@ -277,8 +303,12 @@ body {
   cursor: pointer;
   border: none;
   font-weight: bold;
+  transition: transform 0.2s ease;
 }
 
+.modal-eliminar-modal .botones-confirmacion button:hover {
+  transform: scale(1.05);
+}
 #btn-confirmar {
   background-color: #e22c18;
   color: white;
@@ -287,4 +317,24 @@ body {
 #btn-cancelar {
   background-color: #a3adb4;
   color: black;
+}
+
+.evento-google {
+    border-color: #000000;
+    background-color: #f8f9ff;
+}
+
+.evento-google-label {
+    color: #3bb3a8;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.evento-google .fecha {
+    color: #000000;
+}
+
+.evento-google .eventos {
+    color: #000000;
 }

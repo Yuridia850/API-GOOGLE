@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Iniciar sesión con Google</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js" async defer></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -28,6 +29,8 @@
       <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
         data-shape="rectangular" data-logo_alignment="left">
       </div>
+
+      <button id="oauth-signin" class="oauth-button" style="display: none;">Autorizar Calendario</button>
     </div>
   </div>
 
