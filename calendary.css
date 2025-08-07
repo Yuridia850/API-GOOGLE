@@ -350,6 +350,33 @@ body {
     margin: 3%;
 }
 
+#descripcion-evento{
+    background-color: #3bb3a8;
+    width: 100%;
+    padding: 5%;
+    border-radius: 14px;
+    border-style: hidden;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+#descripcion-evento::placeholder{
+    color: #141414;
+}
+
+#editar-descripcion-evento{
+    background-color: #3bb3a8;
+    width: 100%;
+    padding: 5%;
+    border-radius: 14px;
+    border-style: hidden;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+#editar-descripcion-evento::placeholder{
+    color: #141414;
+}
 
 #nombre-evento {
     padding-left: 40px;
