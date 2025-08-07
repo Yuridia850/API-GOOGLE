@@ -338,3 +338,14 @@ body {
 .evento-google .eventos {
     color: #000000;
 }
+
+.logut{
+    width: 16%;
+    border-radius: 100px;
+    margin-right: 4%;
+}
+
+.logtipo{
+    display: flex;
+    margin: 3%;
+}
