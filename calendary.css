@@ -429,3 +429,83 @@ body {
     background-image: none;
     padding-left: 10px;
 }
+
+#fecha-evento {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding-left: 4px;
+}
+
+#inicio-evento {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 7px;
+    height: 24px;
+}
+
+#fin-evento {
+    background-color: #3bb3a8;
+    border:none;
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 7px;
+    height: 22px;
+}
+
+#btn-guardar {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+#btn-guardar:hover {
+    border-color: #000;
+    border-style: ridge;
+}
+
+#editar-fecha-evento {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: sans-serif;
+    padding-left: 4px;
+}
+
+#editar-inicio-evento {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    height: 24px;
+    margin-left: 4px;
+}
+
+#editar-fin-evento {
+    background-color: #3bb3a8;
+    border:none;
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    height: 22px;
+    margin-left: 4px;
+}
+
+#btn-guardar-edicion {
+    background-color: #3bb3a8;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+#btn-guardar-edicion:hover {
+    border-color: #000;
+    border-style: ridge;
+}
