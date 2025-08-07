@@ -42,15 +42,19 @@
           <div class="modal-formulario">
             <span id="cerrar-modal" class="cerrar">&times;</span>
             <div class="logtipo">
-              <img src="img/logo_2pesos.png" alt="logo" class="logut"> 
+              <img src="Img/logo_2pesos.png" alt="logo" class="logut"> 
               <h2 class="crear">Crear Evento</h2>
             </div>
 
             <form id="formulario-evento">
               <input type="text" id="nombre-evento" placeholder="Nombre del Evento" required>
-              <input type="date" id="fecha-evento" required>
-              <input type="time" id="inicio-evento" required>
-              <input type="time" id="fin-evento" required>
+              <div class="row" style="display: flex;">
+                <input type="date" id="fecha-evento" required>
+                <div class="col">
+                  <input type="time" id="inicio-evento" required>
+                  <input type="time" id="fin-evento" required>
+                </div>
+              </div>
               <input type="text" id="lugar-evento" placeholder="Lugar del Evento" required>
               <input type="text" id="descripcion-evento" placeholder="Descripción del Evento" required>
               <button type="submit" id="btn-guardar">Guardar Evento</button>
@@ -79,14 +83,18 @@
       <div class="modal-formulario">
         <span id="cerrar-modal-editar" class="cerrar">&times;</span>
         <div class="logtipo">
-          <img src="img/logo_2pesos.png" alt="logo" class="logut"> 
+          <img src="Img/logo_2pesos.png" alt="logo" class="logut"> 
           <h2 class="Nuevo-Evento">Editar Evento</h2>
         </div>
         <form id="formulario-editar-evento">
           <input type="text" id="editar-nombre-evento" placeholder="Nombre del Evento" required>
-          <input type="date" id="editar-fecha-evento" required>
-          <input type="time" id="editar-inicio-evento" required>
-          <input type="time" id="editar-fin-evento" required>
+          <div class="row" style="display: flex;">
+            <input type="date" id="editar-fecha-evento" required>
+            <div class="col">
+              <input type="time" id="editar-inicio-evento" required>
+              <input type="time" id="editar-fin-evento" required>
+            </div>
+          </div>
           <input type="text" id="editar-lugar-evento" placeholder="Lugar del Evento" required>
           <input type="text" id="editar-descripcion-evento" placeholder="Descripción del Evento" required>
           <button type="submit" id="btn-guardar-edicion">Guardar Cambios</button>
