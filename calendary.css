@@ -128,8 +128,7 @@ body {
 }
 
 .info-eventos {
-    border-color: #000;
-    border-style: solid;
+    border: hidden;
     padding: 25px;
     width: 750px;
     margin: 20px;
