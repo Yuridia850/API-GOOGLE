@@ -243,6 +243,31 @@ function formatearHora(hora) {
     }
 }
 
+function convertirHoraA24(hora) {
+    if (!hora) return "";
+    
+    if (!hora.includes('AM') && !hora.includes('PM') && !hora.includes('a.m.') && !hora.includes('p.m.')) {
+        return hora;
+    }
+    
+    hora = hora.trim();
+    let esAM = hora.includes('AM') || hora.includes('a.m.');
+    let esPM = hora.includes('PM') || hora.includes('p.m.');
+    
+    let tiempoPuro = hora.replace(/\s*(AM|PM|a\.m\.|p\.m\.)\s*/gi, '');
+    let [horas, minutos] = tiempoPuro.split(':');
+    
+    horas = parseInt(horas);
+    
+    if (esAM) {
+        if (horas === 12) horas = 0;
+    } else if (esPM) {
+        if (horas !== 12) horas += 12;
+    }
+    
+    return `${horas.toString().padStart(2, '0')}:${minutos}`;
+}
+
 async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
     const nuevoEvento = {
         nombreEvento,
@@ -337,7 +362,7 @@ function cargarEventosStorage() {
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     eventos.forEach(evento => {
 
-        if (!evento.googleEventId) {
+        if (evento.googleEventId) {
             mostrarEvento(evento);
         }
     });
@@ -422,11 +447,13 @@ function editarContenedor(boton) {
     
     const nombre = contenedorEditar.querySelector(".eventos").textContent;
     const horaCompleta = contenedorEditar.querySelector(".hora").textContent;
-    const [inicioEvento, finEvento] = horaCompleta.split(' - ');
+    const [inicioEventoDisplay, finEventoDisplay] = horaCompleta.split(' - ');
     const ubicacion = contenedorEditar.querySelector(".ubicacion").textContent;
     const descripcion = contenedorEditar.querySelector(".texto").textContent;
     
-
+    const inicioEvento24 = convertirHoraA24(inicioEventoDisplay);
+    const finEvento24 = convertirHoraA24(finEventoDisplay);
+    
     let fechaOriginal = '';
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     const googleEventId = contenedorEditar.getAttribute('data-google-event-id');
@@ -439,8 +466,6 @@ function editarContenedor(boton) {
     } else {
         const eventoEncontrado = eventos.find(e => 
             e.nombreEvento === nombre && 
-            e.inicioEvento === inicioEvento &&
-            e.finEvento === finEvento &&
             e.lugarEvento === ubicacion
         );
         if (eventoEncontrado) {
@@ -448,11 +473,10 @@ function editarContenedor(boton) {
         }
     }
     
-
     document.getElementById("editar-nombre-evento").value = nombre;
     document.getElementById("editar-fecha-evento").value = fechaOriginal;
-    document.getElementById("editar-inicio-evento").value = inicioEvento;
-    document.getElementById("editar-fin-evento").value = finEvento;
+    document.getElementById("editar-inicio-evento").value = inicioEvento24;
+    document.getElementById("editar-fin-evento").value = finEvento24;
     document.getElementById("editar-lugar-evento").value = ubicacion;
     document.getElementById("editar-descripcion-evento").value = descripcion;
     
