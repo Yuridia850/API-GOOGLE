@@ -24,9 +24,9 @@ body {
     background-color: #3bb3a8;
 }
 
-.header-calendario .titulo-calendario {
+.titulo-calendario {
     padding-top: 23px;
-    margin-right: 145px;
+    margin-right: 100px;
     color: #ffff;
 }
 
@@ -40,6 +40,12 @@ body {
     justify-content: center;
     object-fit: contain;
     margin: 17px 20px;
+}
+
+#text_logo{
+    font-size: 20px;
+    width: 100px;
+    font-weight: 700;
 }
 
 .header-calendario .log-out {
@@ -111,7 +117,7 @@ body {
 }
 
 .titulo-eventos {
-    margin-top: 45px;
+    margin-top: 25px;
     text-align: center;
 }
 
@@ -122,18 +128,20 @@ body {
 }
 
 .info-eventos {
-    border-color: #000;
-    border-style: solid;
+    border: hidden;
     padding: 25px;
     width: 750px;
     margin: 20px;
-    border-radius: 25px;
-    box-shadow: 0 8px 20px 0 rgba(4, 4, 4, 0.577);
-    margin-bottom: 40px;
+    box-shadow: 1px 5px 8px 8px rgba(100, 97, 97, 0.577);
+    margin-bottom: 20px;
+}
+
+.eventos {
+    font-size: 30px;
 }
 
 .fecha {
-    font-size: 26px;
+    font-size: 22px;
 }
 
 .hora {
@@ -182,6 +190,14 @@ body {
 
 .creacion:hover{
     transform: scale(1.05);
+}
+
+.Mes-Año {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3bb3a8;
+    margin: auto;
+    text-align: center;
 }
 
 .modal {
@@ -320,7 +336,7 @@ body {
 }
 
 .evento-google {
-    border-color: #000000;
+    border: hidden;
     background-color: #f8f9ff;
 }
 
