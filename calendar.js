@@ -362,7 +362,7 @@ function cargarEventosStorage() {
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     eventos.forEach(evento => {
 
-        if (evento.googleEventId) {
+        if (!evento.googleEventId) {
             mostrarEvento(evento);
         }
     });
