@@ -13,8 +13,14 @@ async function cargarEventosGoogleCalendar() {
       'orderBy': 'startTime'
     });
 
-    const eventos = response.result.items;
+    let eventos = response.result.items;
     if (eventos && Array.isArray(eventos)) {
+      eventos = eventos.sort((a, b) => {
+        const fechaA = a.start?.dateTime || a.start?.date;
+        const fechaB = b.start?.dateTime || b.start?.date;
+        return new Date(fechaB) - new Date(fechaA);
+      })
+      
       eventos.forEach(evento => {
         const nombreEvento = evento.summary || "Sin título";
         const fechaEvento = evento.start?.dateTime ? evento.start.dateTime.split('T')[0] : evento.start?.date || "";
@@ -259,6 +265,27 @@ async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvent
 }
 
 function mostrarEvento(evento) {
+
+    const container = document.getElementById("container-eventos");
+
+    const fecha = new Date(evento.fechaEvento);
+    const meses = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    const mesAnio = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+
+    let encabezado = Array.from(container.getElementsByClassName("Mes-Año"))
+        .find(h => h.textContent === mesAnio);
+
+    if (!encabezado) {
+        encabezado = document.createElement("h1");
+        encabezado.className = "Mes-Año";
+        encabezado.textContent = mesAnio;
+        container.appendChild(encabezado);
+    } 
+
+
     const nuevoEvento = document.createElement("div");
     nuevoEvento.classList.add("info-eventos");
     
@@ -275,11 +302,11 @@ function mostrarEvento(evento) {
 
     nuevoEvento.innerHTML = `            
     
-    <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
+    <h1 class="eventos">${evento.nombreEvento}</h1>
 
     <div class="evento-row">
         <h1 class="hora">${inicioFormateado} - ${finFormateado}</h1>
-        <h1 class="eventos">${evento.nombreEvento}</h1>
+        <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
     </div>
                 
     <h1 class="ubicacion">${evento.lugarEvento}</h1>
@@ -293,7 +320,11 @@ function mostrarEvento(evento) {
 
     `;
 
-    document.getElementById("container-eventos").appendChild(nuevoEvento);
+    let siguiente = encabezado.nextSibling;
+    while (siguiente && siguiente.classList && siguiente.classList.contains("Mes-Año")) {
+        siguiente = siguiente.nextSibling;
+    }
+    container.insertBefore(nuevoEvento, encabezado.nextSibling);
 }
 
 function guardarEventoStorage(evento) {
