@@ -42,7 +42,7 @@ body {
     margin: 17px 20px;
 }
 
-#text_logo{
+#text_logo {
     font-size: 20px;
     width: 100px;
     font-weight: 700;
@@ -173,12 +173,12 @@ body {
 }
 
 .barra-controles {
-  width: 1200px; 
-  margin-bottom: 20px;
-  text-align: center;
+    width: 1200px; 
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.creacion{
+.creacion {
     width: 60%;
     height: 35px;
     border-radius: 25px;
@@ -188,7 +188,7 @@ body {
     cursor: pointer;
 }
 
-.creacion:hover{
+.creacion:hover {
     transform: scale(1.05);
 }
 
@@ -243,13 +243,13 @@ body {
     font-size: 20px;
     cursor: pointer;
 }
-.control-row{
+.control-row {
     display: flex;
     gap: 15px;
     margin-top: 25px;   
 }
 
-.editar{
+.editar {
     width: 80px;
     height: 30px;
     border-radius: 5px;
@@ -264,7 +264,7 @@ body {
     transform: scale(1.05);
 }
 
-.eliminacion{
+.eliminacion {
     width: 80px;
     height: 30px;
     border-radius: 5px;
@@ -281,58 +281,58 @@ body {
 }
 
 .modal-eliminar-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  backdrop-filter: blur(6px);
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    backdrop-filter: blur(6px);
 }
 
 .modal-eliminar {
-  background: #ffffff;
-  border-radius: 15px;
-  text-align: center;
-  max-width: 300px;
-  height: 100px;
+    background: #ffffff;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 300px;
+    height: 100px;
 }
 
-.modal-eliminar-modal p{
+.modal-eliminar-modal p {
     margin-top: 10px;
     font-size: 15px;
     font-weight: 700;
 }
 
 .modal-eliminar-modal .botones-confirmacion {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 10px;
-  
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .modal-eliminar-modal .botones-confirmacion button {
-  padding: 5px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  font-weight: bold;
-  transition: transform 0.2s ease;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: transform 0.2s ease;
 }
 
 .modal-eliminar-modal .botones-confirmacion button:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
+
 #btn-confirmar {
-  background-color: #e22c18;
-  color: white;
+    background-color: #e22c18;
+    color: white;
 }
 
 #btn-cancelar {
-  background-color: #a3adb4;
-  color: black;
+    background-color: #a3adb4;
+    color: black;
 }
 
 .evento-google {
@@ -355,66 +355,70 @@ body {
     color: #000000;
 }
 
-.logut{
+.logut {
     width: 16%;
     border-radius: 100px;
     margin-right: 4%;
 }
 
-.logtipo{
+.logtipo {
     display: flex;
     margin: 3%;
 }
 
-#descripcion-evento{
-    background-color: #3bb3a8;
+#descripcion-evento {
+    background-color: white;
     width: 100%;
     padding: 5%;
     border-radius: 14px;
-    border-style: hidden;
+    border-style: ridge;
     font-weight: bold;
     font-family: sans-serif;
 }
 
-#descripcion-evento::placeholder{
+#descripcion-evento::placeholder {
     color: #141414;
 }
 
-#editar-descripcion-evento{
-    background-color: #3bb3a8;
+#editar-descripcion-evento {
+    background-color: white;
     width: 100%;
     padding: 5%;
     border-radius: 14px;
-    border-style: hidden;
+    border-style: ridge;
     font-weight: bold;
     font-family: sans-serif;
 }
 
-#editar-descripcion-evento::placeholder{
+#editar-descripcion-evento::placeholder {
     color: #141414;
 }
 
 #nombre-evento {
     padding-left: 40px;
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
     font-family: sans-serif;
     height: 40px; 
 }
+
 #nombre-evento:focus {
     outline: none;
 }
+
 #nombre-evento::placeholder {
     color: #000;
 }
+
 #nombre-evento:placeholder-shown {
     background-image: url(Img/T_logo.png); 
     background-repeat: no-repeat;
     background-size: 20px 20px;
     background-position: 10px center;
 }
+
 #nombre-evento:not(:placeholder-shown) {
     background-image: none;
     padding-left: 10px;
@@ -422,131 +426,163 @@ body {
 
 #editar-nombre-evento {
     padding-left: 40px;
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
     font-family: sans-serif;
     height: 40px; 
 }
+
 #editar-nombre-evento:focus {
     outline: none;
 }
+
 #editar-nombre-evento::placeholder {
     color: #000;
 }
+
 #editar-nombre-evento:placeholder-shown {
     background-image: url(Img/T_logo.png); 
     background-repeat: no-repeat;
     background-size: 20px 20px;
     background-position: 10px center;
 }
+
 #editar-nombre-evento:not(:placeholder-shown) {
     background-image: none;
     padding-left: 10px;
 }
 
 #fecha-evento {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
     font-family: sans-serif;
     padding-left: 4px;
+    margin-right: 4px;
 }
 
 #inicio-evento {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 8px;
-    padding-left: 6px;
-    padding-right: 7px;
+    margin-left: 6px;
+    margin-right: 6px;
     height: 24px;
 }
 
 #fin-evento {
-    background-color: #3bb3a8;
-    border:none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 8px;
-    padding-left: 6px;
-    padding-right: 7px;
+    margin-left: 6px;
+    margin-right: 6px;
     height: 22px;
 }
 
+#lugar-evento {
+    padding-left: 15px;
+    background-color: white;
+    border-style: ridge;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: sans-serif;
+    height: 35px;
+}
+
+#lugar-evento::placeholder {
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #000;
+}
+
 #btn-guardar {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
 }
 
-#btn-guardar:hover {
-    border-color: #000;
-    border-style: ridge;
-}
-
 #editar-fecha-evento {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
     font-family: sans-serif;
     padding-left: 4px;
+    margin-right: 4px;
 }
 
 #editar-inicio-evento {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 8px;
-    padding-left: 6px;
-    padding-right: 6px;
+    margin-left: 6px;
+    margin-right: 6px;
     height: 24px;
-    margin-left: 4px;
+    color: #000;
 }
 
 #editar-fin-evento {
-    background-color: #3bb3a8;
-    border:none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 8px;
-    padding-left: 6px;
-    padding-right: 6px;
+    margin-left: 6px;
+    margin-right: 6px;
     height: 22px;
-    margin-left: 4px;
+    color: #000;
+}
+
+#editar-lugar-evento {
+    padding-left: 15px;
+    background-color: white;
+    border-style: ridge;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: sans-serif;
+    height: 35px;
+}
+
+#editar-lugar-evento::placeholder {
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #000;
 }
 
 #btn-guardar-edicion {
-    background-color: #3bb3a8;
-    border: none;
+    background-color: white;
+    border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
 }
 
-#btn-guardar-edicion:hover {
-    border-color: #000;
-    border-style: ridge;
+.modal-formulario {
+    background-color: white;
 }
 
 .autocomplete-items {
-  position: absolute;
-  top: 130px;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
-  z-index: 1000;
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 130px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .autocomplete-option {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 .autocomplete-option:hover {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
