@@ -562,3 +562,65 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
     
     this.reset();
 });
+
+const api_KEY = "b89328181447414395b15d08230e986e";
+
+function activarAutocomplete(input) {
+  const suggestionBox = document.createElement("div");
+  suggestionBox.className = "autocomplete-items";
+
+  input.parentNode.style.position = "relative";
+  input.parentNode.appendChild(suggestionBox);
+
+  let debounceTimer;
+
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
+    clearTimeout(debounceTimer);
+
+    if (query.length < 3) {
+      suggestionBox.style.display = "none";
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=${api_KEY}`
+        );
+        const data = await res.json();
+
+        suggestionBox.innerHTML = "";
+
+        if (data.features.length > 0) {
+          data.features.forEach((item) => {
+            const suggestion = document.createElement("div");
+            suggestion.textContent = item.properties.formatted;
+            suggestion.className = "autocomplete-option";
+
+            suggestion.addEventListener("click", () => {
+              input.value = item.properties.formatted;
+              suggestionBox.style.display = "none";
+            });
+
+            suggestionBox.appendChild(suggestion);
+          });
+          suggestionBox.style.display = "block";
+        } else {
+          suggestionBox.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error en autocomplete:", error);
+      }
+    }, 300);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!suggestionBox.contains(e.target) && e.target !== input) {
+      suggestionBox.style.display = "none";
+    }
+  });
+}
+
+activarAutocomplete(document.getElementById("lugar-evento"));
+activarAutocomplete(document.getElementById("editar-lugar-evento"));
