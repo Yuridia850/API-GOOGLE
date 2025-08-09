@@ -494,19 +494,23 @@ function editarContenedor(boton) {
     const [inicioEventoDisplay, finEventoDisplay] = horaCompleta.split(' - ');
     const ubicacion = contenedorEditar.querySelector(".ubicacion").textContent;
     const descripcion = contenedorEditar.querySelector(".texto").textContent;
+    const fechaDisplay = contenedorEditar.querySelector(".fecha").textContent;
     
     const inicioEvento24 = convertirHoraA24(inicioEventoDisplay);
     const finEvento24 = convertirHoraA24(finEventoDisplay);
     
-    let fechaOriginal = '';
+
+    let fechaOriginal = convertirFechaDisplayAISO(fechaDisplay);
     let participantesOriginales = [];
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     const googleEventId = contenedorEditar.getAttribute('data-google-event-id');
     
     if (googleEventId) {
         const eventoEncontrado = eventos.find(e => e.googleEventId === googleEventId);
-        if (eventoEncontrado) {
+        if (eventoEncontrado && eventoEncontrado.fechaEvento) {
             fechaOriginal = eventoEncontrado.fechaEvento;
+        }
+        if (eventoEncontrado) {
             participantesOriginales = eventoEncontrado.participantes || [];
         }
     } else {
@@ -531,6 +535,29 @@ function editarContenedor(boton) {
     actualizarListaParticipantes('lista-participantes-editar', participantesEditar);
     
     document.getElementById("modal-editar-evento").classList.remove("hidden");
+}
+
+function convertirFechaDisplayAISO(fechaDisplay) {
+    const meses = {
+        "enero": "01", "febrero": "02", "marzo": "03", "abril": "04",
+        "mayo": "05", "junio": "06", "julio": "07", "agosto": "08",
+        "septiembre": "09", "octubre": "10", "noviembre": "11", "diciembre": "12"
+    };
+    
+    const partes = fechaDisplay.toLowerCase().split(' ');
+    
+    if (partes.length >= 5) {
+        const dia = partes[1].replace(',', '').padStart(2, '0');
+        const mesNombre = partes[3];
+        const año = partes[5];
+        const mesNumero = meses[mesNombre];
+        
+        if (mesNumero) {
+            return `${año}-${mesNumero}-${dia}`;
+        }
+    }
+    
+    return new Date().toISOString().split('T')[0];
 }
 
 document.getElementById("cerrar-modal-editar").addEventListener("click", () => {
