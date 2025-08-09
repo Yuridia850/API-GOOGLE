@@ -647,7 +647,6 @@ function animateProgressBar(progressBarElement, duration) {
   });
 }
 
-// ---- Crear Evento ----
 const formularioCrear = document.getElementById("formulario-evento");
 const btnGuardarCrear = document.getElementById("btn-guardar");
 const progressBarCrear = document.getElementById("progress-bar-fill");
@@ -660,20 +659,13 @@ formularioCrear.addEventListener("submit", async (e) => {
   progressBarContainerCrear.classList.remove("hidden");
   progressBarCrear.style.width = "25%";
 
-  // Animación de barra (2 segundos)
   await animateProgressBar(progressBarCrear, 50);
-
-  // Aquí llamas a tu función real para guardar
-  // await guardarEvento();
 
   btnGuardarCrear.disabled = false;
   progressBarContainerCrear.classList.add("hidden");
   progressBarCrear.style.width = "0%";
-
-  // Aquí puedes cerrar el modal o limpiar formulario
 });
 
-// ---- Editar Evento ----
 const formularioEditar = document.getElementById("formulario-editar-evento");
 const btnGuardarEditar = document.getElementById("btn-guardar-edicion");
 const progressBarEditar = document.getElementById("progress-bar-fill-editar");
@@ -688,12 +680,8 @@ formularioEditar.addEventListener("submit", async (e) => {
 
   await animateProgressBar(progressBarEditar, 50);
 
-  // Aquí llamas a tu función real para guardar cambios
-  // await guardarCambios();
-
   btnGuardarEditar.disabled = false;
   progressBarContainerEditar.classList.add("hidden");
   progressBarEditar.style.width = "0%";
 
-  // Aquí puedes cerrar modal o limpiar formulario
 });
