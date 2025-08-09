@@ -352,21 +352,6 @@ function mostrarEvento(evento) {
     container.insertBefore(nuevoEvento, encabezado.nextSibling);
 }
 
-function guardarEventoStorage(evento) {
-    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-    eventos.push(evento);
-    localStorage.setItem("eventos", JSON.stringify(eventos));
-}
-
-function cargarEventosStorage() {
-    const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-    eventos.forEach(evento => {
-
-        if (!evento.googleEventId) {
-            mostrarEvento(evento);
-        }
-    });
-}
 
 let eventosYaCargados = false;
 
@@ -375,14 +360,49 @@ function cargarTodosLosEventos() {
     
     const container = document.getElementById("container-eventos");
     container.innerHTML = "";
-    
 
-    cargarEventosStorage();
-    
+    cargarEventosGoogleCalendar().then(() => {
+      const encabezados = document.querySelectorAll(".Mes-Año");
 
-    cargarEventosGoogleCalendar();
-    
-    eventosYaCargados = true;
+      if (location.hash) {
+        const hash = decodeURIComponent(location.hash.substring(1));
+        const mesAnio = hash.replace("_", " ");
+        let encontrado = false;
+
+        encabezados.forEach(h1 => {
+          if (h1.textContent.trim() === mesAnio) {
+            h1.scrollIntoView({ behavior: "smooth", block: "start" });
+            encontrado = true;
+          }
+        });
+
+        if (!encontrado) {
+          console.log("No se encontró el mes y año en los encabezados");
+        }
+      } else {
+        const fechaActual = new Date();
+        const meses = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        const mesAnioActual = `${meses[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+        let encontrado = false;
+
+        encabezados.forEach(h1 => {
+          if (h1.textContent.trim() === mesAnioActual) {
+            h1.scrollIntoView({ behavior: "smooth", block: "start" });
+            encontrado = true;
+          }
+        });
+
+        if (!encontrado) {
+          console.log("No se encontró el mes y año en los encabezados");
+        }
+      }
+
+      eventosYaCargados = true;
+
+    });
 }
 
 window.addEventListener("DOMContentLoaded", () => {

@@ -337,6 +337,7 @@ body {
 .evento-google {
     border: hidden;
     background-color: #f8f9ff;
+    margin-bottom: 40px;
 }
 
 .evento-google-label {
