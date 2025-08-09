@@ -393,14 +393,91 @@ function mostrarEvento(evento) {
 
 let eventosYaCargados = false;
 
-function cargarTodosLosEventos() {
-    if (eventosYaCargados) return; 
-    
-    const container = document.getElementById("container-eventos");
-    container.innerHTML = "";
+async function cargarTodosLosEventos() {
+  const container = document.getElementById("container-eventos");
+  container.innerHTML = "";
 
-    cargarEventosGoogleCalendar().then(() => {
-      const encabezados = document.querySelectorAll(".Mes-Año");
+  try {
+    const response = await gapi.client.calendar.events.list({
+      'calendarId': 'primary',
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 100,
+      'orderBy': 'startTime'
+    });
+
+    let eventosGoogle = (response.result.items || []).map(evento => {
+      const nombreEvento = evento.summary || "Sin título";
+      const fechaEvento = evento.start?.dateTime ? evento.start.dateTime.split('T')[0] : evento.start?.date || "";
+      const inicioEvento = evento.start?.dateTime ? new Date(evento.start.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const lugarEvento = evento.location || "";
+      const descripcionEvento = evento.description || "";
+
+      return {
+        nombreEvento,
+        fechaEvento,
+        inicioEvento,
+        finEvento,
+        lugarEvento,
+        descripcionEvento,
+        esEventoGoogle: true,
+        googleEventId: evento.id
+      };
+    });
+
+    eventosGoogle.sort((a, b) => {
+      const aDate = new Date(`${a.fechaEvento}T${convertirHoraA24(a.inicioEvento) || "00:00"}`);
+      const bDate = new Date(`${b.fechaEvento}T${convertirHoraA24(b.inicioEvento) || "00:00"}`);
+      return bDate - aDate;
+    });
+
+    let ultimoMesAnio = null;
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    eventosGoogle.forEach(evento => {
+      const fecha = new Date(evento.fechaEvento);
+      const mesAnio = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+
+      if (mesAnio !== ultimoMesAnio) {
+        const encabezado = document.createElement("h1");
+        encabezado.className = "Mes-Año";
+        encabezado.textContent = mesAnio;
+        container.appendChild(encabezado);
+        ultimoMesAnio = mesAnio;
+      }
+
+      const nuevoEvento = document.createElement("div");
+      nuevoEvento.classList.add("info-eventos");
+      if (evento.esEventoGoogle) nuevoEvento.classList.add("evento-google");
+      if (evento.googleEventId) nuevoEvento.setAttribute('data-google-event-id', evento.googleEventId);
+
+      const inicioFormateado = formatearHora(evento.inicioEvento);
+      const finFormateado = formatearHora(evento.finEvento);
+
+      nuevoEvento.innerHTML = `
+        <h1 class="eventos">${evento.nombreEvento}</h1>
+        <div class="evento-row">
+            <h1 class="hora">${inicioFormateado} - ${finFormateado}</h1>
+            <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
+        </div>
+        <h1 class="ubicacion">${evento.lugarEvento}</h1>
+        <p class="texto">${evento.descripcionEvento}</p>
+        <div class="control-row">
+            <button class="editar" onclick="editarContenedor(this)">Editar</button>
+            <button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>
+        </div>
+      `;
+
+      container.appendChild(nuevoEvento);
+    });
+
+  } catch (error) {
+    console.error("Error al obtener eventos de Google Calendar:", error);
+  }
+
+  const encabezados = document.querySelectorAll(".Mes-Año");
 
       if (location.hash) {
         const hash = decodeURIComponent(location.hash.substring(1));
@@ -438,14 +515,8 @@ function cargarTodosLosEventos() {
         }
       }
 
-      eventosYaCargados = true;
 
-    });
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-
-});
 
 let contenedorEliminar = null;
 
