@@ -53,6 +53,7 @@ body {
     width: 50px;
     margin: 20px 20px;
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .header-calendario .log-out:hover {
@@ -249,14 +250,15 @@ body {
 }
 
 .editar {
-    width: 80px;
-    height: 30px;
+    padding: 5px;
     border-radius: 5px;
     background: linear-gradient(135deg, #3bb3a8, #2a9d8f);
     color: #fff;
     cursor: pointer;
     transition: transform 0.2s ease;
     border: 2px solid #000;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .editar:hover {
@@ -264,15 +266,15 @@ body {
 }
 
 .eliminacion {
-    width: 80px;
-    height: 30px;
+    padding: 5px;
     border-radius: 5px;
     background: linear-gradient(135deg, #ff4757, #ff3742);
     color: #fff;
     cursor: pointer;
     transition: transform 0.2s ease;
     border: 2px solid #000;
-
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .eliminacion:hover {
@@ -499,10 +501,12 @@ body {
 }
 
 #btn-guardar {
-    background-color: white;
+    background-color: #fff;
     border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
+    padding: 5px;
+    cursor: pointer;
 }
 
 #editar-fecha-evento {
@@ -556,6 +560,8 @@ body {
     border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
+    padding: 5px;
+    cursor: pointer;
 }
 
 .modal-formulario {
