@@ -59,6 +59,16 @@
               </div>
               <input type="text" id="lugar-evento" placeholder="Lugar del Evento" required>
               <input type="text" id="descripcion-evento" placeholder="Descripción del Evento" required>
+              
+              <div class="participantes-section">
+                <label>Invitar participantes:</label>
+                <div class="participante-input-container">
+                  <input type="email" id="email-participante" placeholder="correoejemplo@gmail.com">
+                  <button type="button" id="btn-agregar-participante">+</button>
+                </div>
+                <div id="lista-participantes" class="lista-participantes"></div>
+              </div>
+              
               <button type="submit" id="btn-guardar">Guardar Evento</button>
             </form>
           </div>
@@ -99,6 +109,16 @@
           </div>
           <input type="text" id="editar-lugar-evento" placeholder="Lugar del Evento" required>
           <input type="text" id="editar-descripcion-evento" placeholder="Descripción del Evento" required>
+          
+          <div class="participantes-section">
+            <label>Invitar participantes:</label>
+            <div class="participante-input-container">
+              <input type="email" id="editar-email-participante" placeholder="correoejemplo@gmail.com">
+              <button type="button" id="btn-agregar-participante-editar">+</button>
+            </div>
+            <div id="lista-participantes-editar" class="lista-participantes"></div>
+          </div>
+          
           <button type="submit" id="btn-guardar-edicion">Guardar Cambios</button>
         </form>
       </div>
