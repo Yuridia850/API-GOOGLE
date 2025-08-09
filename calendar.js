@@ -46,6 +46,7 @@ async function cargarEventosGoogleCalendar() {
         };
 
         mostrarEvento(eventoGoogle);
+        guardarEventoStorage(eventoGoogle);
       });
     }
   } catch (error) {
@@ -107,7 +108,7 @@ async function eliminarEventoDeGoogleCalendar(eventId) {
   }
 }
 
-async function editarEventoEnGoogleCalendar(eventId, evento) {
+async function editarEventoEnGoogleCalendar(eventId, evento, participantesOriginales = []) {
   try {
     const startDate = new Date(`${evento.fechaEvento}T${evento.inicioEvento}:00`);
     const endDate = new Date(`${evento.fechaEvento}T${evento.finEvento}:00`);
@@ -126,11 +127,21 @@ async function editarEventoEnGoogleCalendar(eventId, evento) {
       }
     };
 
-    if (evento.participantes && evento.participantes.length > 0) {
-      event.attendees = evento.participantes.map(email => ({ 
+    const participantesActuales = evento.participantes || [];
+    const participantesEliminados = participantesOriginales.filter(
+      email => !participantesActuales.includes(email)
+    );
+
+    if (participantesActuales.length > 0) {
+      event.attendees = participantesActuales.map(email => ({ 
         email: email,
         responseStatus: 'needsAction'
       }));
+    }
+
+
+    if (participantesEliminados.length > 0) {
+      console.log('Participantes que serán desinvitados:', participantesEliminados);
     }
 
     const response = await gapi.client.calendar.events.update({
@@ -141,6 +152,9 @@ async function editarEventoEnGoogleCalendar(eventId, evento) {
     });
 
     console.log("Evento editado en Google Calendar:", response);
+    if (participantesEliminados.length > 0) {
+      console.log(`Se enviaron notificaciones de cancelación a: ${participantesEliminados.join(', ')}`);
+    }
     return true;
   } catch (error) {
     console.error("Error al editar evento en Google Calendar:", error);
@@ -531,6 +545,7 @@ function editarContenedor(boton) {
     document.getElementById("editar-lugar-evento").value = ubicacion;
     document.getElementById("editar-descripcion-evento").value = descripcion;
     
+    window.participantesOriginalesEdicion = [...participantesOriginales];
     participantesEditar = [...participantesOriginales];
     actualizarListaParticipantes('lista-participantes-editar', participantesEditar);
     
@@ -592,7 +607,8 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
     };
     
     if (googleEventId) {
-        const exitoGoogle = await editarEventoEnGoogleCalendar(googleEventId, eventoEditado);
+        const participantesOriginales = window.participantesOriginalesEdicion || [];
+        const exitoGoogle = await editarEventoEnGoogleCalendar(googleEventId, eventoEditado, participantesOriginales);
         if (!exitoGoogle) {
             alert("Error al actualizar el evento en Google Calendar");
             return;
@@ -633,6 +649,7 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
     document.getElementById("modal-editar-evento").classList.add("hidden");
     contenedorEditar = null;
     participantesEditar = [];
+    window.participantesOriginalesEdicion = [];
     
     this.reset();
 });
@@ -767,3 +784,20 @@ document.getElementById('editar-email-participante').addEventListener('keypress'
         agregarParticipante('editar-email-participante', 'lista-participantes-editar', participantesEditar);
     }
 });
+
+function guardarEventoStorage(evento) {
+    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    
+    if (evento.googleEventId) {
+        const index = eventos.findIndex(e => e.googleEventId === evento.googleEventId);
+        if (index !== -1) {
+            eventos[index] = evento;
+        } else {
+            eventos.push(evento);
+        }
+    } else {
+        eventos.push(evento);
+    }
+    
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+}
