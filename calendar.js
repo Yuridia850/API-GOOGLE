@@ -787,6 +787,68 @@ function activarAutocomplete(input) {
 activarAutocomplete(document.getElementById("lugar-evento"));
 activarAutocomplete(document.getElementById("editar-lugar-evento"));
 
+
+// Función para animar la barra de progreso
+function animateProgressBar(progressBarElement, duration) {
+  return new Promise((resolve) => {
+    let start = null;
+
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const progress = Math.min(elapsed / duration, 1);
+      progressBarElement.style.width = (progress * 100) + "%";
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        resolve();
+      }
+    }
+
+    window.requestAnimationFrame(step);
+  });
+}
+
+const formularioCrear = document.getElementById("formulario-evento");
+const btnGuardarCrear = document.getElementById("btn-guardar");
+const progressBarCrear = document.getElementById("progress-bar-fill");
+const progressBarContainerCrear = document.getElementById("progress-bar-crear");
+
+formularioCrear.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  btnGuardarCrear.disabled = true;
+  progressBarContainerCrear.classList.remove("hidden");
+  progressBarCrear.style.width = "25%";
+
+  await animateProgressBar(progressBarCrear, 50);
+
+  btnGuardarCrear.disabled = false;
+  progressBarContainerCrear.classList.add("hidden");
+  progressBarCrear.style.width = "0%";
+});
+
+const formularioEditar = document.getElementById("formulario-editar-evento");
+const btnGuardarEditar = document.getElementById("btn-guardar-edicion");
+const progressBarEditar = document.getElementById("progress-bar-fill-editar");
+const progressBarContainerEditar = document.getElementById("progress-bar-editar");
+
+formularioEditar.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  btnGuardarEditar.disabled = true;
+  progressBarContainerEditar.classList.remove("hidden");
+  progressBarEditar.style.width = "25%";
+
+  await animateProgressBar(progressBarEditar, 50);
+
+  btnGuardarEditar.disabled = false;
+  progressBarContainerEditar.classList.add("hidden");
+  progressBarEditar.style.width = "0%";
+
+});
+
 function agregarParticipante(inputId, listaId, arrayParticipantes) {
     const emailInput = document.getElementById(inputId);
     const email = emailInput.value.trim();
@@ -872,3 +934,4 @@ function guardarEventoStorage(evento) {
     
     localStorage.setItem("eventos", JSON.stringify(eventos));
 }
+
