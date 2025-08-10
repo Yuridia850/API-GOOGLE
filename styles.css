@@ -7,75 +7,36 @@ body {
   flex-direction: column;
 }
 
-.g_id_signin {
-  margin-top: 20px;
-  margin-left: auto;
-  position: relative;
-  left: 20px;
-}
-
-.oauth-button {
-  margin-top: 20px;
-  margin-left: auto;
-  position: relative;
-  left: 20px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: #3bb3a8;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(59, 179, 168, 0.2);
-  font-family: 'Roboto', sans-serif;
-  min-width: 180px;
-}
-
-.oauth-button:hover {
-  background-color: #2fa396;
-  box-shadow: 0 4px 12px rgba(59, 179, 168, 0.3);
-  transform: translateY(-1px);
-}
-
-.oauth-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(59, 179, 168, 0.2);
-}
-
-#logout-btn {
-  margin-top: 10px;
-  padding: 12px 25px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #ffffff;
-  color: #3bb3a8;
-  border: 2px solid #3bb3a8;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  position: relative;
-  bottom: 107px;
-}
-
-.login img{
-border-radius:50%
-}
-
 .login-card {
-  width: 700px;
-  height: 400px;
+  width: 100%;
+  max-width: 950px;
+  height: 70%;
   background-color: white;
   display: flex;
+  flex-wrap: wrap;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   overflow: hidden;
   position: relative;
 }
 
-.lado-left {
+
+.lado-left, .lado-deresho {
   width: 50%;
+  min-width: 300px;
+  box-sizing: border-box;
+}
+
+
+.circle-bg {
+  position: absolute;
+  width: 106%;
+  height: 300%;
+  background-color: #3bb3a8;
+  border-radius: 50%;
+}
+
+.lado-left {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,35 +44,22 @@ border-radius:50%
   position: relative;
 }
 
-.circle-bg {
-  position: absolute;
-  width: 190%;
-  height: 200%;
-  background-color: #3bb3a8;
-  border-radius: 50%;
-}
-
 .lado-left .logo {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   z-index: 2;
-  position: relative;
-  left: 50px;
 }
 
 .lado-left h2 {
   color: white;
   margin-top: 15px;
   z-index: 2;
-  margin-left: auto;
-      position: relative;
-    left: 12px;
+  text-align: center;
 }
 
 .lado-deresho {
-  width: 50%;
-  padding: 0px 90px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -121,10 +69,111 @@ border-radius:50%
   margin: 0 0 10px;
   font-size: 24px;
   color: #333;
-  position: relative;
-  text-align: end;
-  right: 10px;
+  text-align: center;
 }
+
+
+.oauth-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  min-width: unset;
+  width: 100%;
+  max-width: 250px;
+  align-self: center;
+}
+
+#logout-btn {
+  margin-top: 10px;
+  padding: 12px 25px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 250px;
+  align-self: center;
+}
+
+
+.login img {
+  border-radius: 50%;
+}
+
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .login-card {
+    height: 40%;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+
+  .circle-bg {
+    width: 140%;
+    height: 900%;
+    left: -40%;
+    
+  }
+
+  .lado-deresho h2 {
+    padding: 15px;
+    font-size: 32px; 
+    text-align: center;
+  }
+}
+
+
+
+@media (max-width: 768px) {
+
+.login-card {
+    flex-direction: column;  
+    max-width: 95%;  
+    height: 55%; 
+      
+  }
+
+  .lado-left{
+    width: 100%;
+    padding: 20px;
+    height: 30%;
+  }
+
+  .lado-deresho {
+    width: 100%;
+    padding: 20px;
+    height: 30%;
+  }
+  
+  .lado-left img{
+  margin-top: 150px;
+  position: absolute;
+  }
+  
+
+  .circle-bg {
+    width: 250%;
+    height: 245%;
+    left: -70%;
+    top: -70%;
+  }
+
+  .lado-deresho h2{
+    padding: 10px;
+  }
+  
+
+
+  .lado-deresho {
+    margin-top: 120px;
+    width: 100%;
+  }
+  .lado-deresho h2 {
+    text-align: center;
+  }
+}
+
 
 #user-info {
   background-color: #3bb3a8;
