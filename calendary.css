@@ -53,6 +53,7 @@ body {
     width: 50px;
     margin: 20px 20px;
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .header-calendario .log-out:hover {
@@ -249,14 +250,15 @@ body {
 }
 
 .editar {
-    width: 80px;
-    height: 30px;
+    padding: 5px;
     border-radius: 5px;
     background: linear-gradient(135deg, #3bb3a8, #2a9d8f);
     color: #fff;
     cursor: pointer;
     transition: transform 0.2s ease;
     border: 2px solid #000;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .editar:hover {
@@ -264,15 +266,15 @@ body {
 }
 
 .eliminacion {
-    width: 80px;
-    height: 30px;
+    padding: 5px;
     border-radius: 5px;
     background: linear-gradient(135deg, #ff4757, #ff3742);
     color: #fff;
     cursor: pointer;
     transition: transform 0.2s ease;
     border: 2px solid #000;
-
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .eliminacion:hover {
@@ -337,6 +339,7 @@ body {
 .evento-google {
     border: hidden;
     background-color: #f8f9ff;
+    margin-bottom: 40px;
 }
 
 .evento-google-label {
@@ -498,10 +501,12 @@ body {
 }
 
 #btn-guardar {
-    background-color: white;
+    background-color: #fff;
     border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
+    padding: 5px;
+    cursor: pointer;
 }
 
 #editar-fecha-evento {
@@ -555,6 +560,8 @@ body {
     border-style: ridge;
     border-radius: 15px;
     font-weight: bold;
+    padding: 5px;
+    cursor: pointer;
 }
 
 .modal-formulario {
@@ -606,4 +613,86 @@ body {
 
 .hidden {
   display: none !important;
+}
+
+.participantes-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.participante-input-container {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.participante-input-container input[type="email"] {
+    flex: 1;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.participante-input-container button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: #3bb3a8;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.participante-input-container button:hover {
+    background-color: #2a9d8f;
+}
+
+.lista-participantes {
+    max-height: 100px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f9f9f9;
+}
+
+.participante-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 5px;
+    margin-bottom: 3px;
+    background-color: white;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.participante-email {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-eliminar-participante {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.btn-eliminar-participante:hover {
+    background-color: #ff3742;
 }

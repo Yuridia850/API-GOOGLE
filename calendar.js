@@ -3,6 +3,9 @@ const API_KEY = 'AIzaSyCJF2jf9KoIzoIXIsSZCxIfpXiBMtErW3Q';
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
+let participantesCrear = [];
+let participantesEditar = [];
+
 async function cargarEventosGoogleCalendar() {
   try {
     const response = await gapi.client.calendar.events.list({
@@ -28,6 +31,7 @@ async function cargarEventosGoogleCalendar() {
         const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
         const lugarEvento = evento.location || "";
         const descripcionEvento = evento.description || "";
+        const participantes = evento.attendees ? evento.attendees.map(attendee => attendee.email) : [];
 
         const eventoGoogle = {
           nombreEvento,
@@ -36,11 +40,13 @@ async function cargarEventosGoogleCalendar() {
           finEvento,
           lugarEvento,
           descripcionEvento,
+          participantes,
           esEventoGoogle: true,
           googleEventId: evento.id
         };
 
         mostrarEvento(eventoGoogle);
+        guardarEventoStorage(eventoGoogle);
       });
     }
   } catch (error) {
@@ -67,9 +73,17 @@ async function agregarEventoAGoogleCalendar(evento) {
       }
     };
 
+    if (evento.participantes && evento.participantes.length > 0) {
+      event.attendees = evento.participantes.map(email => ({ 
+        email: email,
+        responseStatus: 'needsAction'
+      }));
+    }
+
     const response = await gapi.client.calendar.events.insert({
       'calendarId': 'primary',
-      'resource': event
+      'resource': event,
+      'sendNotifications': true
     });
 
     console.log("Evento agregado a Google Calendar:", response);
@@ -94,7 +108,7 @@ async function eliminarEventoDeGoogleCalendar(eventId) {
   }
 }
 
-async function editarEventoEnGoogleCalendar(eventId, evento) {
+async function editarEventoEnGoogleCalendar(eventId, evento, participantesOriginales = []) {
   try {
     const startDate = new Date(`${evento.fechaEvento}T${evento.inicioEvento}:00`);
     const endDate = new Date(`${evento.fechaEvento}T${evento.finEvento}:00`);
@@ -113,13 +127,34 @@ async function editarEventoEnGoogleCalendar(eventId, evento) {
       }
     };
 
+    const participantesActuales = evento.participantes || [];
+    const participantesEliminados = participantesOriginales.filter(
+      email => !participantesActuales.includes(email)
+    );
+
+    if (participantesActuales.length > 0) {
+      event.attendees = participantesActuales.map(email => ({ 
+        email: email,
+        responseStatus: 'needsAction'
+      }));
+    }
+
+
+    if (participantesEliminados.length > 0) {
+      console.log('Participantes que serán desinvitados:', participantesEliminados);
+    }
+
     const response = await gapi.client.calendar.events.update({
       'calendarId': 'primary',
       'eventId': eventId,
-      'resource': event
+      'resource': event,
+      'sendNotifications': true
     });
 
     console.log("Evento editado en Google Calendar:", response);
+    if (participantesEliminados.length > 0) {
+      console.log(`Se enviaron notificaciones de cancelación a: ${participantesEliminados.join(', ')}`);
+    }
     return true;
   } catch (error) {
     console.error("Error al editar evento en Google Calendar:", error);
@@ -188,11 +223,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById("btn-crear").addEventListener("click", () => {
     document.getElementById("modal-formulario").classList.remove("hidden");
+    participantesCrear = [];
+    actualizarListaParticipantes('lista-participantes', participantesCrear);
 })
 
 document.getElementById("cerrar-modal").addEventListener("click", () => {
     document.getElementById("modal-formulario").classList.add("hidden");
-})
+s})
 
 document.getElementById("formulario-evento").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -204,10 +241,10 @@ document.getElementById("formulario-evento").addEventListener("submit", function
     const lugarEvento = document.getElementById("lugar-evento").value;
     const descripcionEvento = document.getElementById("descripcion-evento").value;
 
-    crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento);
+    crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento, participantesCrear);
 
     document.getElementById("modal-formulario").classList.add("hidden");
-
+    participantesCrear = [];
     this.reset();
 });
 
@@ -268,14 +305,15 @@ function convertirHoraA24(hora) {
     return `${horas.toString().padStart(2, '0')}:${minutos}`;
 }
 
-async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento) {
+async function crearContenedor(nombreEvento, fechaEvento, inicioEvento, finEvento, lugarEvento, descripcionEvento, participantes = []) {
     const nuevoEvento = {
         nombreEvento,
         fechaEvento,
         inicioEvento,
         finEvento,
         lugarEvento,
-        descripcionEvento
+        descripcionEvento,
+        participantes
     };
 
     const googleEventId = await agregarEventoAGoogleCalendar(nuevoEvento);
@@ -352,42 +390,133 @@ function mostrarEvento(evento) {
     container.insertBefore(nuevoEvento, encabezado.nextSibling);
 }
 
-function guardarEventoStorage(evento) {
-    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-    eventos.push(evento);
-    localStorage.setItem("eventos", JSON.stringify(eventos));
-}
-
-function cargarEventosStorage() {
-    const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
-    eventos.forEach(evento => {
-
-        if (!evento.googleEventId) {
-            mostrarEvento(evento);
-        }
-    });
-}
 
 let eventosYaCargados = false;
 
-function cargarTodosLosEventos() {
-    if (eventosYaCargados) return; 
-    
-    const container = document.getElementById("container-eventos");
-    container.innerHTML = "";
-    
+async function cargarTodosLosEventos() {
+  const container = document.getElementById("container-eventos");
+  container.innerHTML = "";
 
-    cargarEventosStorage();
-    
+  try {
+    const response = await gapi.client.calendar.events.list({
+      'calendarId': 'primary',
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 100,
+      'orderBy': 'startTime'
+    });
 
-    cargarEventosGoogleCalendar();
-    
-    eventosYaCargados = true;
+    let eventosGoogle = (response.result.items || []).map(evento => {
+      const nombreEvento = evento.summary || "Sin título";
+      const fechaEvento = evento.start?.dateTime ? evento.start.dateTime.split('T')[0] : evento.start?.date || "";
+      const inicioEvento = evento.start?.dateTime ? new Date(evento.start.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const finEvento = evento.end?.dateTime ? new Date(evento.end.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      const lugarEvento = evento.location || "";
+      const descripcionEvento = evento.description || "";
+
+      return {
+        nombreEvento,
+        fechaEvento,
+        inicioEvento,
+        finEvento,
+        lugarEvento,
+        descripcionEvento,
+        esEventoGoogle: true,
+        googleEventId: evento.id
+      };
+    });
+
+    eventosGoogle.sort((a, b) => {
+      const aDate = new Date(`${a.fechaEvento}T${convertirHoraA24(a.inicioEvento) || "00:00"}`);
+      const bDate = new Date(`${b.fechaEvento}T${convertirHoraA24(b.inicioEvento) || "00:00"}`);
+      return bDate - aDate;
+    });
+
+    let ultimoMesAnio = null;
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    eventosGoogle.forEach(evento => {
+      const fecha = new Date(evento.fechaEvento);
+      const mesAnio = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+
+      if (mesAnio !== ultimoMesAnio) {
+        const encabezado = document.createElement("h1");
+        encabezado.className = "Mes-Año";
+        encabezado.textContent = mesAnio;
+        container.appendChild(encabezado);
+        ultimoMesAnio = mesAnio;
+      }
+
+      const nuevoEvento = document.createElement("div");
+      nuevoEvento.classList.add("info-eventos");
+      if (evento.esEventoGoogle) nuevoEvento.classList.add("evento-google");
+      if (evento.googleEventId) nuevoEvento.setAttribute('data-google-event-id', evento.googleEventId);
+
+      const inicioFormateado = formatearHora(evento.inicioEvento);
+      const finFormateado = formatearHora(evento.finEvento);
+
+      nuevoEvento.innerHTML = `
+        <h1 class="eventos">${evento.nombreEvento}</h1>
+        <div class="evento-row">
+            <h1 class="hora">${inicioFormateado} - ${finFormateado}</h1>
+            <h1 class="fecha">${FechaLocal(evento.fechaEvento)}</h1>
+        </div>
+        <h1 class="ubicacion">${evento.lugarEvento}</h1>
+        <p class="texto">${evento.descripcionEvento}</p>
+        <div class="control-row">
+            <button class="editar" onclick="editarContenedor(this)">Editar</button>
+            <button class="eliminacion" onclick="eliminarContenedor(this)">Eliminar</button>
+        </div>
+      `;
+
+      container.appendChild(nuevoEvento);
+    });
+
+  } catch (error) {
+    console.error("Error al obtener eventos de Google Calendar:", error);
+  }
+
+  const encabezados = document.querySelectorAll(".Mes-Año");
+
+      if (location.hash) {
+        const hash = decodeURIComponent(location.hash.substring(1));
+        const mesAnio = hash.replace("_", " ");
+        let encontrado = false;
+
+        encabezados.forEach(h1 => {
+          if (h1.textContent.trim() === mesAnio) {
+            h1.scrollIntoView({ behavior: "smooth", block: "start" });
+            encontrado = true;
+          }
+        });
+
+        if (!encontrado) {
+          console.log("No se encontró el mes y año en los encabezados");
+        }
+      } else {
+        const fechaActual = new Date();
+        const meses = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        const mesAnioActual = `${meses[fechaActual.getMonth()]} ${fechaActual.getFullYear()}`;
+        let encontrado = false;
+
+        encabezados.forEach(h1 => {
+          if (h1.textContent.trim() === mesAnioActual) {
+            h1.scrollIntoView({ behavior: "smooth", block: "start" });
+            encontrado = true;
+          }
+        });
+
+        if (!encontrado) {
+          console.log("No se encontró el mes y año en los encabezados");
+        }
+      }
+
+
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-
-});
 
 let contenedorEliminar = null;
 
@@ -450,18 +579,24 @@ function editarContenedor(boton) {
     const [inicioEventoDisplay, finEventoDisplay] = horaCompleta.split(' - ');
     const ubicacion = contenedorEditar.querySelector(".ubicacion").textContent;
     const descripcion = contenedorEditar.querySelector(".texto").textContent;
+    const fechaDisplay = contenedorEditar.querySelector(".fecha").textContent;
     
     const inicioEvento24 = convertirHoraA24(inicioEventoDisplay);
     const finEvento24 = convertirHoraA24(finEventoDisplay);
     
-    let fechaOriginal = '';
+
+    let fechaOriginal = convertirFechaDisplayAISO(fechaDisplay);
+    let participantesOriginales = [];
     const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     const googleEventId = contenedorEditar.getAttribute('data-google-event-id');
     
     if (googleEventId) {
         const eventoEncontrado = eventos.find(e => e.googleEventId === googleEventId);
-        if (eventoEncontrado) {
+        if (eventoEncontrado && eventoEncontrado.fechaEvento) {
             fechaOriginal = eventoEncontrado.fechaEvento;
+        }
+        if (eventoEncontrado) {
+            participantesOriginales = eventoEncontrado.participantes || [];
         }
     } else {
         const eventoEncontrado = eventos.find(e => 
@@ -470,6 +605,7 @@ function editarContenedor(boton) {
         );
         if (eventoEncontrado) {
             fechaOriginal = eventoEncontrado.fechaEvento;
+            participantesOriginales = eventoEncontrado.participantes || [];
         }
     }
     
@@ -480,7 +616,34 @@ function editarContenedor(boton) {
     document.getElementById("editar-lugar-evento").value = ubicacion;
     document.getElementById("editar-descripcion-evento").value = descripcion;
     
+    window.participantesOriginalesEdicion = [...participantesOriginales];
+    participantesEditar = [...participantesOriginales];
+    actualizarListaParticipantes('lista-participantes-editar', participantesEditar);
+    
     document.getElementById("modal-editar-evento").classList.remove("hidden");
+}
+
+function convertirFechaDisplayAISO(fechaDisplay) {
+    const meses = {
+        "enero": "01", "febrero": "02", "marzo": "03", "abril": "04",
+        "mayo": "05", "junio": "06", "julio": "07", "agosto": "08",
+        "septiembre": "09", "octubre": "10", "noviembre": "11", "diciembre": "12"
+    };
+    
+    const partes = fechaDisplay.toLowerCase().split(' ');
+    
+    if (partes.length >= 5) {
+        const dia = partes[1].replace(',', '').padStart(2, '0');
+        const mesNombre = partes[3];
+        const año = partes[5];
+        const mesNumero = meses[mesNombre];
+        
+        if (mesNumero) {
+            return `${año}-${mesNumero}-${dia}`;
+        }
+    }
+    
+    return new Date().toISOString().split('T')[0];
 }
 
 document.getElementById("cerrar-modal-editar").addEventListener("click", () => {
@@ -509,20 +672,20 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
         finEvento,
         lugarEvento,
         descripcionEvento,
+        participantes: participantesEditar,
         googleEventId: googleEventId,
         esEventoGoogle: !!googleEventId
     };
     
-
     if (googleEventId) {
-        const exitoGoogle = await editarEventoEnGoogleCalendar(googleEventId, eventoEditado);
+        const participantesOriginales = window.participantesOriginalesEdicion || [];
+        const exitoGoogle = await editarEventoEnGoogleCalendar(googleEventId, eventoEditado, participantesOriginales);
         if (!exitoGoogle) {
             alert("Error al actualizar el evento en Google Calendar");
             return;
         }
     }
     
-
     let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
     if (googleEventId) {
         const index = eventos.findIndex(e => e.googleEventId === googleEventId);
@@ -530,7 +693,6 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
             eventos[index] = eventoEditado;
         }
     } else {
-
         const nombreOriginal = contenedorEditar.querySelector(".eventos").textContent;
         const horaOriginal = contenedorEditar.querySelector(".hora").textContent;
         const ubicacionOriginal = contenedorEditar.querySelector(".ubicacion").textContent;
@@ -546,7 +708,6 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
     }
     localStorage.setItem("eventos", JSON.stringify(eventos));
     
-
     const inicioFormateado = formatearHora(inicioEvento);
     const finFormateado = formatearHora(finEvento);
     
@@ -556,9 +717,10 @@ document.getElementById("formulario-editar-evento").addEventListener("submit", a
     contenedorEditar.querySelector(".ubicacion").textContent = lugarEvento;
     contenedorEditar.querySelector(".texto").textContent = descripcionEvento;
     
-
     document.getElementById("modal-editar-evento").classList.add("hidden");
     contenedorEditar = null;
+    participantesEditar = [];
+    window.participantesOriginalesEdicion = [];
     
     this.reset();
 });
@@ -625,6 +787,7 @@ function activarAutocomplete(input) {
 activarAutocomplete(document.getElementById("lugar-evento"));
 activarAutocomplete(document.getElementById("editar-lugar-evento"));
 
+
 // Función para animar la barra de progreso
 function animateProgressBar(progressBarElement, duration) {
   return new Promise((resolve) => {
@@ -685,3 +848,90 @@ formularioEditar.addEventListener("submit", async (e) => {
   progressBarEditar.style.width = "0%";
 
 });
+
+function agregarParticipante(inputId, listaId, arrayParticipantes) {
+    const emailInput = document.getElementById(inputId);
+    const email = emailInput.value.trim();
+    
+    if (email && validarEmail(email)) {
+        if (!arrayParticipantes.includes(email)) {
+            arrayParticipantes.push(email);
+            actualizarListaParticipantes(listaId, arrayParticipantes);
+            emailInput.value = '';
+        } else {
+            alert('Este email ya está en la lista');
+        }
+    } else {
+        alert('Por favor ingresa un email válido');
+    }
+}
+
+function eliminarParticipante(email, listaId, arrayParticipantes) {
+    const index = arrayParticipantes.indexOf(email);
+    if (index > -1) {
+        arrayParticipantes.splice(index, 1);
+        actualizarListaParticipantes(listaId, arrayParticipantes);
+    }
+}
+
+function actualizarListaParticipantes(listaId, arrayParticipantes) {
+    const lista = document.getElementById(listaId);
+    lista.innerHTML = '';
+    
+    arrayParticipantes.forEach(email => {
+        const participanteDiv = document.createElement('div');
+        participanteDiv.className = 'participante-item';
+        
+        participanteDiv.innerHTML = `
+            <span class="participante-email">${email}</span>
+            <button type="button" class="btn-eliminar-participante" onclick="eliminarParticipante('${email}', '${listaId}', ${listaId.includes('editar') ? 'participantesEditar' : 'participantesCrear'})">×</button>
+        `;
+        
+        lista.appendChild(participanteDiv);
+    });
+}
+
+function validarEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+document.getElementById('btn-agregar-participante').addEventListener('click', () => {
+    agregarParticipante('email-participante', 'lista-participantes', participantesCrear);
+});
+
+document.getElementById('btn-agregar-participante-editar').addEventListener('click', () => {
+    agregarParticipante('editar-email-participante', 'lista-participantes-editar', participantesEditar);
+});
+
+document.getElementById('email-participante').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        agregarParticipante('email-participante', 'lista-participantes', participantesCrear);
+    }
+});
+
+document.getElementById('editar-email-participante').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        agregarParticipante('editar-email-participante', 'lista-participantes-editar', participantesEditar);
+    }
+});
+
+function guardarEventoStorage(evento) {
+    let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+    
+    if (evento.googleEventId) {
+        const index = eventos.findIndex(e => e.googleEventId === evento.googleEventId);
+        if (index !== -1) {
+            eventos[index] = evento;
+        } else {
+            eventos.push(evento);
+        }
+    } else {
+        eventos.push(evento);
+    }
+    
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+}
+
