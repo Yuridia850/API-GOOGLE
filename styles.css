@@ -63,6 +63,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .lado-deresho h2 {
@@ -76,11 +77,24 @@ body {
 .oauth-button {
   margin-top: 20px;
   padding: 12px 24px;
-  font-size: 16px;
-  min-width: unset;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background-color: #2ab3a3; 
+  color: white;
   width: 100%;
   max-width: 250px;
   align-self: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.oauth-button:hover {
+  background-color: #239a8d;
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.327);
 }
 
 #logout-btn {
