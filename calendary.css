@@ -817,7 +817,6 @@ html, body {
     gap: 10px;
 }
 
-#nombre-evento,
 #editar-nombre-evento,
 #lugar-evento,
 #editar-lugar-evento {
@@ -911,7 +910,10 @@ html, body {
 .creacion {
     width: 98%;
     min-width: 90px;
-    font-size: 15px;
+    font-size: 14px;
+    height: 25px;
+    margin-bottom: 15px;
+
 }
 .evento-row {
     flex-direction: column;
@@ -968,14 +970,14 @@ html, body {
 }
 
 .log-out {
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 35px;
     margin: 0 5px;
 }
 
 .header-calendario .logo {
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
     margin: 0 5px 0 0;
     font-size: 12px;
     flex-shrink: 0;
@@ -1001,16 +1003,16 @@ html, body {
 }
 
 .header-calendario .logo {
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 35px;
     margin: 0 2px 0 0;
     font-size: 10px;
     flex-shrink: 0;
     }
 
 .header-calendario .log-out {
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 35px;
 }
 
 #text_logo {
