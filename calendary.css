@@ -933,7 +933,7 @@ body {
         word-break: break-word;
     }
 
-    #nombre-evento,
+    
     #editar-nombre-evento,
     #lugar-evento,
     #editar-lugar-evento,
@@ -941,6 +941,19 @@ body {
     #editar-descripcion-evento {
         font-size: 13px;
         padding-left: 8px;
+    }
+
+    #nombre-evento {
+        font-size: 13px;
+        padding-left: 34px;
+    }
+
+    .modal-formulario {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 313px;
+    position: relative;
     }
 
     .Mes-Año {
